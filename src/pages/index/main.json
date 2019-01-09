@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "首页",
+  "enablePullDownRefresh":false,
+  "usingComponents": {
+    "i-button": "/static/iview/button/index",
+    "i-icon": "/static/iview/icon/index",
+    "i-input": "/static/iview/input/index",
+    "i-tabs": "/static/iview/tabs/index",
+    "i-tab": "/static/iview/tab/index"
+  }
+}

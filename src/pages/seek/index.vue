@@ -1,0 +1,434 @@
+<template>
+  <div class="seek" @click="showzhlist">
+      <div class="seek-top">
+        <div class="sousuo">
+          <!-- <div class="sousuo-left">
+            <span @click="onSiteName">{{mapName}}</span>
+            <span class="icon2">           
+            </span>           
+          </div> -->
+          <div class="sousuo-input">
+              <i-icon class="icon" type="search" size="18" color="#BBBBAA"/>
+              <input 
+              v-model="input"
+              @focus="seekInput" 
+              @input='keyCode'
+              @confirm='seeks'
+              confirm-type='search' 
+              focus	
+              placeholder-style="color:#BBBBAA;"
+                placeholder="你想找什么？" />
+          </div>
+          <ul v-if="ismapList" class="seek-ul">
+            <li v-for="item in mapList" :key="item.id" @click="onMap(item.text)">{{item.text}}</li>
+          </ul>
+        </div>
+        <span class="call" @click="oncall">取消</span>      
+    </div>
+    <div style="width:100%" v-if="isresult">
+      <div class="commType">
+          <div v-for="comm in commType" :key="comm.id">
+            <p :class="{span:oncommType==comm.id}" @click="oncommTypes(comm.id)">
+              {{comm.name}}
+            </p>
+          </div>
+      </div>
+      <div class="history">
+          <p>历史记录</p>
+          <div class="history-item">
+            <div class="history-name"
+             v-for="item in historyList"
+             @click="historyNmae(item)"              
+             :key="item.id">{{item.name}}</div>
+          </div>
+      </div>
+    </div>
+    <div v-else>
+        <div v-if="oncommType==1" class="seetResult">
+          <div class="div" v-for="comm in filterList" :key="comm.id">
+            <p :class="{'result-span':resultType==comm.id}" @click.stop="resultTypes(comm.id)">
+              <span>{{comm.name}}</span>
+              <span v-if="resultType==comm.id" class="icon4"></span> 
+              <span v-else class="icon3"></span>  
+            </p>
+          </div>
+          <div class="zhList" v-if="iszhList=='1'">
+              <div class="zh-item"
+               v-for="item in zhList"
+               @click="zhitem(item.id)"
+               :key="item.id">
+                  <span :class="{zhColor:zhtype==item.id}">{{item.name}}</span>
+                  <i-icon v-if="zhtype==item.id" type="right" size="18" color="#1DB389"/>
+              </div>
+          </div>
+      </div>
+       <div v-else class="seetResult" style="padding:0 50px;">
+          <div class="div" v-for="comm in filterList2" :key="comm.id">
+            <p :class="{'result-span':resultType==comm.id}" @click.stop="resultTypes(comm.id)">
+              <span>{{comm.name}}</span>
+              <span v-if="resultType==comm.id" class="icon4"></span> 
+              <span v-else class="icon3"></span>  
+            </p>
+          </div>
+          <div class="zhList" v-if="iszhList=='1'">
+              <div class="zh-item"
+               v-for="item in zhList"
+               @click="zhitem(item.id)"
+               :key="item.id">
+                  <span :class="{zhColor:zhtype==item.id}">{{item.name}}</span>
+                  <i-icon v-if="zhtype==item.id" type="right" size="18" color="#1DB389"/>
+              </div>
+          </div>
+      </div>
+      <seek-result v-if="oncommType==1" :commList='commList' ></seek-result>
+      <seek-firm v-else :commList='commList' ></seek-firm>
+    </div>
+    <!-- 品牌右侧弹框 -->
+    <i-drawer style="width:100%;height:100%;" mode="right" :visible="showRight1" @close="toggright1s">
+        <scroll-view 
+        scroll-y
+        :scroll-into-view="toView"
+        class="container">
+          <div class="hots-pinpai">
+               <div class="container-top">
+                <span class="hot">热门品牌</span>    
+                <span class="advertising">广告</span> 
+              </div>
+              <div class="hot-brand">
+                <div v-for="item in hotbrands" :key="item.id">
+                    {{item.name}}
+                </div>
+              </div>
+          </div>
+         
+          <div class="hot-index">
+              <div style="padding:0px;" v-for="(item,index) in wordsIndex"
+              @click.stop="toIndex(item)"
+              :key="index">{{item}}</div>
+          </div>
+          
+            <div v-for="(item,index) in cities" :key="index" :id="item.key">
+                <div class="brand-index">
+                    {{item.key}}
+                </div>
+                <div v-for="(item2,index2) in item.list" :key="index2">
+                  <div class="brand-name">
+                    <div class="imgBox">
+                      <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+                    </div>
+                    <span>{{item2.name}}</span>            
+                  </div>
+                </div>
+            </div>
+          
+        </scroll-view>
+    </i-drawer>
+    <!-- 筛选右侧弹框 -->
+    <i-drawer style="width:100%;height:100%;" mode="right" :visible="showRight2" @close="toggright1s2">
+        <scroll-view 
+        scroll-y
+        class="container">         
+          <div class="container-filter">
+              <span class="filter-span">价格区间</span>
+              <div class="filter-price">
+                <div v-for="(item,index) in filterPrice" :key="index"
+                :class="{choosePitch:price2.id==item.id,priceBox:index!=1,border:index==1}"
+                @click="cutPrice(item)"
+                >{{item.name}}</div>
+              </div>
+          </div>
+           <div class="container-filter" style="border-bottom:1rpx solid #999;">
+              <span class="filter-span">环保</span>
+              <div class="huanbao">
+                  <div v-for="(item,index) in huanbaoa" :key="index"
+                  :class="{choosePitch:talls2.id==item.id}"
+                  @click="cutHuanbao(item)"
+                   class="tall">{{item.name}}</div>                 
+              </div>
+          </div>
+          <div class="choose-box">
+              <span class="choose-span">选购热点</span>
+              <div class="choose-hots">
+                  <div 
+                  class="hots-item" 
+                  v-for="(item,index) in chooseHot"
+                  :class="{choosePitch:chooseHots2.id==item.id}"
+                   @click="cutHots(item)"
+                   :key="index">{{item.name}}</div>                   
+              </div>
+          </div>
+          <i-button @click="chooseClick" type="warning" size="small">确定</i-button>
+        </scroll-view>
+    </i-drawer>
+  </div>
+</template>
+
+<script>
+import seekResult from './seekResult'
+import seekFirm from './seekFirm'
+import {pinyin} from '../../utils/pinyin.js'
+export default {
+  data () {
+    return {
+      input:'',
+      isresult:true,
+      showRight1:false,
+      showRight2:false,
+      wordsIndex:[],//品牌索引
+      chooseHot:[ //选购热点
+        {id:1,name:'牛栏山'},
+          {id:2,name:'牛栏'},
+          {id:3,name:'牛栏山'},
+          {id:4,name:'牛栏山'},
+          {id:5,name:'牛栏山'},
+          {id:6,name:'牛栏'},
+      ],
+      huanbaoa:[ //环保
+         {id:1,name:'高'},
+          {id:2,name:'中'},
+          {id:3,name:'低'},
+      ], 
+      filterPrice:[
+           {id:1,name:'最低价'},
+          {id:2,name:''},
+          {id:3,name:'最高价'},
+      ],
+      //筛选条件
+      price2:{id:1,name:''},
+      talls2:{id:2,name:''},
+      chooseHots2:{id:1,name:''},
+
+      toView:'',
+      mapName:'宜兴',
+      cities : [
+          {name:'哎是粉色发'},
+          {name:'吧大大'},
+          {name:'从了阿法尔输入法而'},
+          {name:'的阿达瓦大'},
+          {name:'额大沙地'},
+          {name:'发啊大大'},
+          {name:'个法法'},
+          {name:'好污染物'},
+          {name:'看发顺丰'},
+          {name:'吗如果是提供商'},
+
+        ],
+      mapList:[
+        {id:1,text:'宜兴'},
+        {id:2,text:'武侯区'},
+        {id:3,text:'青羊区'},
+        {id:4,text:'锦江区'},
+      ],
+      ismapList:false,
+      commType:[
+        {id:1,name:'建材'},
+        {id:2,name:'设计'},
+        {id:3,name:'服务'},
+        {id:4,name:'经销商'},
+      ],
+      oncommType:'1',
+      resultType:'1',
+      zhtype:'1',
+      iszhList:'',
+      historyList:[
+        {id:1,name:'建材'},
+        {id:2,name:'设计'},
+        {id:3,name:'服务'},
+        {id:4,name:'经销商'}
+      ],
+      filterList:[
+        {id:1,name:'综合'},
+        {id:2,name:'品牌'},
+        {id:3,name:'筛选'},
+      ],
+      filterList2:[
+        {id:1,name:'综合'},
+        // {id:2,name:'品牌'},
+        {id:3,name:'筛选'},
+      ],
+      zhList:[
+        {id:1,name:'综合优先'},
+        {id:2,name:'关注排序'},
+        {id:3,name:'新品优先'},
+      ],
+       commList:[
+        {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+        {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙贴 无缝背景墙 密拼 2018欧式瓷',amount:'1452',pay:'1'},
+        {id:3,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙贴 无缝背景墙 密拼 2018欧式瓷',amount:'1452',pay:'1'},
+        {id:4,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙贴 无缝背景墙 密拼 2018欧式瓷',amount:'1452',pay:'1'},
+        {id:5,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙贴 无缝背景墙 密拼 2018欧式瓷',amount:'1452',pay:'1'},
+        ],
+        //热门品牌
+        hotbrands:[
+          {id:1,name:'牛栏山'},
+          {id:2,name:'牛栏'},
+          {id:3,name:'牛栏山'},
+          {id:4,name:'牛栏山'},
+          {id:5,name:'牛栏山'},
+          {id:6,name:'牛栏'},
+        ]
+    }
+    
+  },
+
+  components: {
+      seekResult,
+      seekFirm
+  },
+  mounted() {
+    this.isresult=true
+    this.input=''
+    this.brandList()
+    
+  },
+  onShow(){
+     this.resultType='1'
+    this.zhtype='1'
+  },
+  methods: {
+    //点击取消返回首页
+    oncall(){
+      wx.switchTab({
+        url: '/pages/index/main'
+      })
+    },
+
+
+    //显示隐藏品牌右边的弹框
+    toggright1s(){
+      this.showRight1=!this.showRight1
+      console.log('品牌关闭')
+    },
+    //显示隐藏筛选右边的弹框
+    toggright1s2(){
+        this.showRight2=!this.showRight2
+    },
+    //获取品牌字母索引
+    toIndex(id){
+      this.toView=id
+      console.log(id)
+    },
+    //选择价格
+    cutPrice(item){
+        this.price2.id=item.id
+         this.price2.name=item.name
+    },
+    //选择环保
+    cutHuanbao(item){
+        this.talls2.id=item.id
+        this.talls2.name=item.name
+    },
+    //选择热点
+    cutHots(item){
+          this.chooseHots2.id=item.id
+          this.chooseHots2.name=item.name
+    },
+    //筛选确认
+    chooseClick(){
+      console.log('筛选')
+      console.log(this.chooseHots2)
+      this.showRight2=false
+    },
+
+
+    //动态绑定input内容
+    keyCode(e){
+      console.log(e)
+      this.input=e.target.value
+      if(this.input==''){
+          this.isresult=true
+          this.resultType='1'
+          this.zhtype='1'
+      }
+    },
+    //确认搜索
+    seeks(){
+      console.log('搜索',this.input)
+      if(this.input!=''){
+        this.isresult=false
+      }else{
+         wx.showToast({
+          title:'搜索内容不能为空！',
+          icon: 'none'
+        })
+      }
+    },
+    //隐藏综合list
+    showzhlist(){
+      this.iszhList=''
+    },
+    onMap(name){
+      this.mapName=name
+      this.ismapList=false
+    },
+    //地址
+    onSiteName(){
+      this.ismapList=true
+    },
+    //点击搜索类型
+    oncommTypes(id){
+      this.oncommType=id
+      console.log(id)
+    },
+    //搜索结果筛选类型
+    resultTypes(id){
+          this.resultType=id
+          this.iszhList=id
+          if(id==2){
+            this.toggright1s();
+          }
+          else if(id==3){
+              this.toggright1s2();
+          }
+    },
+    //点击综合里面的item
+    zhitem(id){
+        this.zhtype=id
+    },
+    //点击历史记录
+    historyNmae(item){
+        this.isresult=false
+        this.input=item.name
+
+    },
+    // 品牌索引
+      onChange(event){
+        console.log(event,'click right menu callback data')
+    },
+    brandList(){
+        let storeCity = new Array(26);
+        const words = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+        words.forEach((item,index)=>{
+            storeCity[index] = {
+                key : item,
+                list : []
+            }
+        })
+        this.wordsIndex=words
+        this.cities.forEach((item)=>{
+            let firstName = pinyin.getCamelChars(item.name).substring(0,1);
+            let index = words.indexOf( firstName );
+            storeCity[index].list.push({
+                name : item.name,
+                key : firstName
+            });
+        })
+        this.cities = storeCity;
+        console.log(this.cities)
+        // this.setData({
+        //     cities : this.data.cities
+        // })
+    }
+  },
+  onReady(){
+    
+  },
+  created () {
+    
+  }
+}
+</script>
+
+<style lang="scss">
+    @import './style.scss';
+</style>

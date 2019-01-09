@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "搜索",
+  "usingComponents": {
+    "i-icon": "/static/iview/icon/index",
+    "i-drawer": "/static/iview/drawer/index",
+    "i-index": "/static/iview/index/index",
+    "i-index-item": "/static/iview/index-item/index",
+    "i-button": "/static/iview/button/index"
+  }
+}
