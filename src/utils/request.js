@@ -10,7 +10,7 @@ request.interceptors.request.use(
     //   request.headers['token'] = wx.getStorageSync('token')
       request.headers['token'] ='dfdf54654'
       // request.headers['content-type']='application/x-www-form-urlencoded'
-      wx.showLoading({title: '加载中...'})
+      // wx.showLoading({title: '加载中...'})
       return request
     }
    )

@@ -10,7 +10,8 @@
                 <span>{{text.name}}</span>
             </div>
             <div>
-               <img class="item-icon" src="/static/Icon/att1.png" alt="">
+               <img v-if="text.isAttention==0" class="item-icon" src="/static/Icon/att1.png" alt="">
+               <img v-else class="item-icon" src="/static/Icon/att2.png" alt="">
               <span>{{text.attentionCount}}</span>
             </div>
         </div>

@@ -37,9 +37,9 @@
           <p>历史记录</p>
           <div class="history-item">
             <div class="history-name"
-             v-for="item in historyList"
+             v-for="(item,index) in materials[oncommType-1]"
              @click="historyNmae(item)"              
-             :key="item.id">{{item.name}}</div>
+             :key="index">{{item}}</div>
           </div>
       </div>
     </div>
@@ -62,7 +62,7 @@
               </div>
           </div>
       </div>
-       <div v-else class="seetResult" style="padding:0 50px;">
+       <!-- <div v-else class="seetResult" style="padding:0 50px;">
           <div class="div" v-for="comm in filterList2" :key="comm.id">
             <p :class="{'result-span':resultType==comm.id}" @click.stop="resultTypes(comm.id)">
               <span>{{comm.name}}</span>
@@ -79,9 +79,10 @@
                   <i-icon v-if="zhtype==item.id" type="right" size="18" color="#1DB389"/>
               </div>
           </div>
-      </div>
+      </div> -->
       <seek-result v-if="oncommType==1" :commList='commList' ></seek-result>
       <seek-firm v-else :commList='commList' ></seek-firm>
+      <div class="nocommList" v-if="commList.length<1">没有找到相关数据！</div>
     </div>
     <!-- 品牌右侧弹框 -->
     <i-drawer style="width:100%;height:100%;" mode="right" :visible="showRight1" @close="toggright1s">
@@ -107,14 +108,14 @@
               :key="index">{{item}}</div>
           </div>
           
-            <div v-for="(item,index) in cities" :key="index" :id="item.key">
+            <div style="margin-bottom:5px;" v-for="(item,index) in cities" :key="index" :id="item.key">
                 <div class="brand-index">
                     {{item.key}}
                 </div>
                 <div v-for="(item2,index2) in item.list" :key="index2">
                   <div class="brand-name">
-                    <div class="imgBox">
-                      <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+                    <div class="imgBox" @click="onpinpai(item2)">
+                      <img :src="item2.imgUrl" alt="">
                     </div>
                     <span>{{item2.name}}</span>            
                   </div>
@@ -152,8 +153,8 @@
                   <div 
                   class="hots-item" 
                   v-for="(item,index) in chooseHot"
-                  :class="{choosePitch:chooseHots2.id==item.id}"
-                   @click="cutHots(item)"
+                  :class="{choosePitch:chooseHots2.id==index}"
+                   @click="cutHots(item,index)"
                    :key="index">{{item.name}}</div>                   
               </div>
           </div>
@@ -167,6 +168,7 @@
 import seekResult from './seekResult'
 import seekFirm from './seekFirm'
 import {pinyin} from '../../utils/pinyin.js'
+import {searchType,addFindAll} from '../../utils/api.js'
 export default {
   data () {
     return {
@@ -194,12 +196,13 @@ export default {
           {id:3,name:'最高价'},
       ],
       //筛选条件
-      price2:{id:1,name:''},
-      talls2:{id:2,name:''},
-      chooseHots2:{id:1,name:''},
+      price2:{id:0,name:''},
+      talls2:{id:0,name:''},
+      chooseHots2:{id:120,name:''},
 
       toView:'',
       mapName:'宜兴',
+      brand:'', //热门品牌
       cities : [
           {name:'哎是粉色发'},
           {name:'吧大大'},
@@ -226,7 +229,7 @@ export default {
         {id:3,name:'服务'},
         {id:4,name:'经销商'},
       ],
-      oncommType:'1',
+      oncommType:1,
       resultType:'1',
       zhtype:'1',
       iszhList:'',
@@ -266,7 +269,10 @@ export default {
           {id:4,name:'牛栏山'},
           {id:5,name:'牛栏山'},
           {id:6,name:'牛栏'},
-        ]
+        ],
+        materials:[],
+        pageNum:1,
+        pageSize:10
     }
     
   },
@@ -279,11 +285,21 @@ export default {
     this.isresult=true
     this.input=''
     this.brandList()
-    
   },
   onShow(){
      this.resultType='1'
     this.zhtype='1'
+  let materials=wx.getStorageSync('materials')||[[],[],[],[]]
+    this.materials=JSON.parse(materials)
+    console.log(materials)
+  },
+  onLoad(){
+      addFindAll({type:'品牌'}).then(res=>{
+        console.log('所有品牌',res)
+        if(res.code==200&&res.data!=null){
+          this.cities=res.data
+        }
+      })
   },
   methods: {
     //点击取消返回首页
@@ -308,6 +324,21 @@ export default {
       this.toView=id
       console.log(id)
     },
+    //点击热门品牌
+    onpinpai(item){
+      console.log(item.name)
+      this.toggright1s()
+      searchType({pageNum:this.pageNum,
+      pageSize:this.pageSize,
+      type:this.oncommType-1,
+      brand:item.name,
+      }).then(res=>{
+        console.log('热门品牌商品',res)
+        if(res.code==200&&res.data!=null){
+            this.commList=res.data.list
+        }
+      })
+    },
     //选择价格
     cutPrice(item){
         this.price2.id=item.id
@@ -319,8 +350,8 @@ export default {
         this.talls2.name=item.name
     },
     //选择热点
-    cutHots(item){
-          this.chooseHots2.id=item.id
+    cutHots(item,index){
+          this.chooseHots2.id=index
           this.chooseHots2.name=item.name
     },
     //筛选确认
@@ -328,6 +359,19 @@ export default {
       console.log('筛选')
       console.log(this.chooseHots2)
       this.showRight2=false
+      searchType({
+        pageNum:this.pageNum,
+        pageSize:this.pageSize,
+        type:this.oncommType-1,
+        floorPrice:this.price2.id,
+        highestPrice:this.price2.id,
+        up:this.talls2.name
+        }).then(res=>{
+        console.log('主页搜索商品',res)
+        if(res.code==200&&res.data!=null){
+            this.commList=res.data.list
+        }
+      })
     },
 
 
@@ -341,17 +385,49 @@ export default {
           this.zhtype='1'
       }
     },
-    //确认搜索
+    //确认搜索design
     seeks(){
-      console.log('搜索',this.input)
-      if(this.input!=''){
+      console.log('搜索',this.input)  
+      searchType({pageNum:this.pageNum,pageSize:this.pageSize,type:this.oncommType-1,keyword:this.input}).then(res=>{
+        console.log('主页搜索商品',res)
+        if(res.code==200&&res.data!=null){
+            this.commList=res.data.list
+        }
+      })
         this.isresult=false
-      }else{
-         wx.showToast({
-          title:'搜索内容不能为空！',
-          icon: 'none'
-        })
-      }
+        if(this.oncommType=='1'&&this.input!=''){
+          let index=this.materials[0].indexOf(this.input)
+          console.log(index)
+          if(index==-1){
+              this.materials[0].unshift(this.input)
+            wx.setStorageSync('materials',JSON.stringify(this.materials))
+          }
+          else return
+        }
+        else if(this.oncommType=='2'&&this.input!=''){
+           let index=this.materials[0].indexOf(this.input)
+            if(index==-1){
+              this.materials[1].unshift(this.input)
+            wx.setStorageSync('materials',JSON.stringify(this.materials))
+          }
+          else return
+        }
+        else if(this.oncommType=='3'&&this.input!=''){
+           let index=this.materials[0].indexOf(this.input)
+            if(index==-1){
+              this.materials[2].unshift(this.input)
+            wx.setStorageSync('materials',JSON.stringify(this.materials))
+          }
+          else return
+        }
+        else if(this.oncommType=='4'&&this.input!=''){
+           let index=this.materials[0].indexOf(this.input)
+             if(index==-1){
+              this.materials[3].unshift(this.input)
+            wx.setStorageSync('materials',JSON.stringify(this.materials))
+          }
+          else return
+        }
     },
     //隐藏综合list
     showzhlist(){
@@ -384,15 +460,56 @@ export default {
     //点击综合里面的item
     zhitem(id){
         this.zhtype=id
+        if(id==1){
+          searchType({pageNum:this.pageNum,pageSize:this.pageSize,type:this.oncommType-1,keyword:this.input}).then(res=>{
+            console.log('搜索综合商品',res)
+            if(res.code==200&&res.data!=null){
+                this.commList=res.data.list
+            }
+          })
+        }
+        else if(id==2){
+          console.log('关注排序')
+           searchType({
+             pageNum:this.pageNum,
+             pageSize:this.pageSize,
+             type:this.oncommType-1,
+             attentionCount:'0',
+            }).then(res=>{
+            console.log('搜索综合商品',res)
+            if(res.code==200&&res.data!=null){
+                this.commList=res.data.list
+            }
+          })
+        }
+         else if(id==3){
+          console.log('综合排序')
+           searchType({
+             pageNum:this.pageNum,
+             pageSize:this.pageSize,
+             type:this.oncommType-1,
+             newProduct:'0',
+             }).then(res=>{
+            console.log('搜索综合商品',res)
+            if(res.code==200&&res.data!=null){
+                this.commList=res.data.list
+            }
+          })
+        }
     },
     //点击历史记录
     historyNmae(item){
         this.isresult=false
-        this.input=item.name
-
+        this.input=item
+        searchType({pageNum:this.pageNum,pageSize:this.pageSize,type:this.oncommType-1,keyword:this.input}).then(res=>{
+        console.log('主页搜索商品',res)
+        if(res.code==200&&res.data!=null){
+            this.commList=res.data.list
+        }
+      })
     },
-    // 品牌索引
-      onChange(event){
+    // 产品索引
+    onChange(event){
         console.log(event,'click right menu callback data')
     },
     brandList(){
@@ -410,7 +527,8 @@ export default {
             let index = words.indexOf( firstName );
             storeCity[index].list.push({
                 name : item.name,
-                key : firstName
+                key : firstName,
+                imgUrl:item.imgUrl
             });
         })
         this.cities = storeCity;

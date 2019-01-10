@@ -39,15 +39,14 @@ export default {
         }
       },
       computed: {
-        texts(){      
-            return function(name){
-              return 'sda'
-            }
-        }
+      
       },
       methods: {
         fimrDetails(id){
             console.log('公司id',id)
+            wx.navigateTo({
+              url:`../details/main?id=${id}`
+            }) 
         }
       }
 }
@@ -58,7 +57,6 @@ export default {
 .seekFirm{
     width:350px;
     margin:20px auto;
-    min-height:300px;
     background: #fff;
     .seekFirm-items{
       padding: 15px;

@@ -10,7 +10,7 @@
         </div>
         <img :src="indexBanner" alt="">
     </div>
-    <div class="product-type">
+    <div class="product-type" @click.stop="indextype">
         <div class="product-item" v-for="item in productList" :key="item.id">
             <img style="width:100rpx;height:100rpx;" :src="item.img" alt="">
             <div style="margin-top:10px;">{{item.text}}</div>
@@ -39,7 +39,7 @@
 <script>
 import qs from 'qs'
 import {
-  getData,
+  userInfo,
   commodityList,
   indexBanner
   } from '../../utils/api.js'
@@ -88,15 +88,15 @@ export default {
     //首页banner
     indexBanner().then(res=>{
       console.log('banner',res)   
-      if(res.code==200){
+      if(res.code==200&&res.data!=null){
           this.indexBanner=res.data.imgUrl  
       }
     }),
     //首页商品列表
     commodityList({pageNum:'1',pageSize:10,type:'',name:''}).then(res=>{
      console.log('商品列表',res)   
-        if(res.code==200){
-              this.commList=res.data.list              
+        if(res.code==200&&res.data!=null){
+          this.commList=res.data.list              
         }
    })
   },
@@ -109,13 +109,15 @@ export default {
           // console.log('code',res1)
           wx.getUserInfo({
             success: (res) => {
-              // console.log('user',res)
+              // console.log('user',res)openId
               this.userInfo = res.userInfo
-              getData(
-                `/user/decodeUserInfo`,
-                {code:res1.code,encryptedData:res.encryptedData,iv:res.iv},
-                'POST').then(res=>{
+              userInfo(
+                {code:res1.code,encryptedData:res.encryptedData,iv:res.iv}
+              ).then(res=>{
                 console.log('用户id',res)
+                if(res.code==200&&res.data!=null){
+                  wx.setStorageSync('openId',res.data.openId)
+                }
               })
             }
           })
@@ -132,8 +134,7 @@ export default {
       //         }       
       //   })
       // },
-       handleChangeScroll (e) {
-       
+       handleChangeScroll (e) {      
         this. current_scroll=e.target.key
         console.log(e.target.key)
     },
@@ -143,7 +144,13 @@ export default {
         url:`../seek/main`
       })
     },
-   
+     //点击分类类型
+    indextype(){
+      console.log('fellei')
+        wx.switchTab({
+          url: '/pages/classify/main'
+        })
+    },
   },
   onPullDownRefresh(){
     console.log('下拉')

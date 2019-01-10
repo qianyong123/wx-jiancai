@@ -39,7 +39,5 @@ export default {
     justify-content: space-between;
     flex-wrap: wrap;
     margin-top: 20px;
-    min-height:300px;
-    background: #F4F7FA;
 }
 </style>

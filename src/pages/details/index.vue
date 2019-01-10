@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {getData} from '../../utils/request.js'
+import {getData} from '../../utils/api.js'
 
 export default {
   data () {

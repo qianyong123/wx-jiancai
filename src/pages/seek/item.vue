@@ -1,17 +1,18 @@
 <template>
-  <div class="seek-items">
-        <div class="item-img">
-            <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+  <div class="seek-items" @click="productDetails(text.id)">
+       <div class="item-img">
+            <img :src="text.imgUrl" alt="">
         </div>
-        <p class="item-p">{{text.text}}</p>
+        <p class="item-p">{{text.description}}</p>
         <div class="item-amount">
             <div>
               <img class="item-icon" src="/static/Icon/user.jpg" alt="">
                 <span>{{text.name}}</span>
             </div>
             <div>
-               <img class="item-icon" src="/static/Icon/att1.png" alt="">
-              <span>{{text.amount}}</span>
+               <img  v-if="text.isAttention==0" class="item-icon" src="/static/Icon/att1.png" alt="">
+               <img v-else class="item-icon" src="/static/Icon/att2.png" alt="">
+              <span>{{text.attentionCount}}</span>
             </div>
         </div>
   </div>
@@ -33,11 +34,11 @@ export default {
         }
       },
       methods: {
-        textName(names){
-          let text=names
-         
-          
-        }
+          productDetails(id){
+            wx.navigateTo({
+              url:`../details/main?id=${id}`
+            })  
+          }
       }
 }
 </script>
