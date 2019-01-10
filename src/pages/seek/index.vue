@@ -10,8 +10,7 @@
           <div class="sousuo-input">
               <i-icon class="icon" type="search" size="18" color="#BBBBAA"/>
               <input 
-              v-model="input"
-              @focus="seekInput" 
+              v-model="input"             
               @input='keyCode'
               @confirm='seeks'
               confirm-type='search' 
@@ -41,6 +40,7 @@
              @click="historyNmae(item)"              
              :key="index">{{item}}</div>
           </div>
+          <div @click="clearHieory" v-if="materials[oncommType-1].length>0" class="clear-history">清空历史记录</div>
       </div>
     </div>
     <div v-else>
@@ -256,10 +256,6 @@ export default {
       ],
        commList:[
         {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-        {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙贴 无缝背景墙 密拼 2018欧式瓷',amount:'1452',pay:'1'},
-        {id:3,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙贴 无缝背景墙 密拼 2018欧式瓷',amount:'1452',pay:'1'},
-        {id:4,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙贴 无缝背景墙 密拼 2018欧式瓷',amount:'1452',pay:'1'},
-        {id:5,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙贴 无缝背景墙 密拼 2018欧式瓷',amount:'1452',pay:'1'},
         ],
         //热门品牌
         hotbrands:[
@@ -282,24 +278,30 @@ export default {
       seekFirm
   },
   mounted() {
-    this.isresult=true
     this.input=''
     this.brandList()
   },
   onShow(){
-     this.resultType='1'
+    this.resultType='1'
     this.zhtype='1'
-  let materials=wx.getStorageSync('materials')||[[],[],[],[]]
-    this.materials=JSON.parse(materials)
+    let materials=wx.getStorageSync('materials')||[[],[],[],[]]
+    this.materials=materials
     console.log(materials)
   },
   onLoad(){
+      this.isresult=true
       addFindAll({type:'品牌'}).then(res=>{
         console.log('所有品牌',res)
         if(res.code==200&&res.data!=null){
           this.cities=res.data
         }
       })
+      let data=this.$root.$mp.query
+      if(data.key==1){
+        this.oncommType=Number(data.type)+1
+        this.isresult=false
+      }
+      console.log('query',data)
   },
   methods: {
     //点击取消返回首页
@@ -385,6 +387,12 @@ export default {
           this.zhtype='1'
       }
     },
+    //清空历史记录
+    clearHieory(){
+      wx.removeStorageSync('materials')
+      this.materials=[[],[],[],[]]
+      console.log('kk')
+    },
     //确认搜索design
     seeks(){
       console.log('搜索',this.input)  
@@ -400,15 +408,15 @@ export default {
           console.log(index)
           if(index==-1){
               this.materials[0].unshift(this.input)
-            wx.setStorageSync('materials',JSON.stringify(this.materials))
+            wx.setStorageSync('materials',this.materials)
           }
           else return
         }
         else if(this.oncommType=='2'&&this.input!=''){
            let index=this.materials[0].indexOf(this.input)
             if(index==-1){
-              this.materials[1].unshift(this.input)
-            wx.setStorageSync('materials',JSON.stringify(this.materials))
+            this.materials[1].unshift(this.input)
+            wx.setStorageSync('materials',this.materials)
           }
           else return
         }
@@ -416,7 +424,7 @@ export default {
            let index=this.materials[0].indexOf(this.input)
             if(index==-1){
               this.materials[2].unshift(this.input)
-            wx.setStorageSync('materials',JSON.stringify(this.materials))
+            wx.setStorageSync('materials',this.materials)
           }
           else return
         }
@@ -424,7 +432,7 @@ export default {
            let index=this.materials[0].indexOf(this.input)
              if(index==-1){
               this.materials[3].unshift(this.input)
-            wx.setStorageSync('materials',JSON.stringify(this.materials))
+            wx.setStorageSync('materials',this.materials)
           }
           else return
         }

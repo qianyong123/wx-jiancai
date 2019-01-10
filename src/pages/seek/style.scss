@@ -161,6 +161,7 @@
           }
         }
   }
+  //历史记录
   .history{
     width:100%;
     padding:0 20px;
@@ -177,13 +178,27 @@
       .history-name{
         margin-right: 10px;
         margin-bottom: 10px;
-        padding:6px 10px;
+        height: 26px;
+        line-height: 26px;
+        padding:0 10px;
         background: #F8F8F8;
         border: 1px solid #F8F8F8;
          color: #999;
-         border-radius:6px;
+         border-radius:13px;
       }
      
+    }
+    .clear-history{
+        width: 120px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        margin: 30px auto;
+        font-size: 16px;
+        background: #F8F8F8;
+        border: 1px solid #F8F8F8;
+        color: #999;
+        border-radius:15px;
     }
   }
     //   右侧品牌弹框

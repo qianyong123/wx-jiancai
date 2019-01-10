@@ -5,7 +5,6 @@
           <div class="sousuo-input"  @click="seekInput">
               <i-icon class="icon" type="search" size="18" color="#BBBBAA"/>
               <div style="color:#BBBBAA;">你想找什么？</div>
-              <!-- <input @focus="seekInput" confirm-type='search' placeholder-style="color:#BBBBAA;" placeholder="你想找什么？" /> -->
           </div>
         </div>
         <img :src="indexBanner" alt="">
