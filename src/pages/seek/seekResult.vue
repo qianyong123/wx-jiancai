@@ -34,6 +34,7 @@ export default {
 <style lang="scss" scoped>
 @import '../../style/base.scss';
 .seekResult{
+    width: 100%;
     padding: 10px;
     display: flex;
     justify-content: space-between;

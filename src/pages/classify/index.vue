@@ -46,7 +46,7 @@ export default {
   data () {
     return {
         classiifyList:[
-          {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'首付撒大阿帆'},
+          {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'首付撒'},
           {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
           {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
           {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},

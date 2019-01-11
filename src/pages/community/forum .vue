@@ -20,14 +20,18 @@ export default {
     props:['forumList','index'],
   data () {
     return {
-    
+        names:''
     }
   },
 
   components: {
     
   },
-
+    computed: {
+        name(){
+            return 'gfx'
+        }
+    },
   methods: {
     
   },

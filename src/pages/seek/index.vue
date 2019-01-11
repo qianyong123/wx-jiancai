@@ -1,5 +1,5 @@
 <template>
-  <div class="seek" @click="showzhlist">
+  <div class="seek" @click="hidezhlist">
       <div class="seek-top">
         <div class="sousuo">
           <!-- <div class="sousuo-left">
@@ -61,6 +61,7 @@
                   <i-icon v-if="zhtype==item.id" type="right" size="18" color="#1DB389"/>
               </div>
           </div>
+          <div v-if="iszhList=='1'" class="zheban"></div>
       </div>
        <!-- <div v-else class="seetResult" style="padding:0 50px;">
           <div class="div" v-for="comm in filterList2" :key="comm.id">
@@ -96,7 +97,7 @@
                 <span class="advertising">广告</span> 
               </div>
               <div class="hot-brand">
-                <div v-for="item in hotbrands" :key="item.id">
+                <div v-for="item in hotbrands" :key="item.id" @click="onpinpai(item)">
                     {{item.name}}
                 </div>
               </div>
@@ -113,8 +114,8 @@
                     {{item.key}}
                 </div>
                 <div v-for="(item2,index2) in item.list" :key="index2">
-                  <div class="brand-name">
-                    <div class="imgBox" @click="onpinpai(item2)">
+                  <div class="brand-name" @click="onpinpai(item2)">
+                    <div class="imgBox">
                       <img :src="item2.imgUrl" alt="">
                     </div>
                     <span>{{item2.name}}</span>            
@@ -133,9 +134,11 @@
               <span class="filter-span">价格区间</span>
               <div class="filter-price">
                 <div v-for="(item,index) in filterPrice" :key="index"
-                :class="{choosePitch:price2.id==item.id,priceBox:index!=1,border:index==1}"
-                @click="cutPrice(item)"
-                >{{item.name}}</div>
+                :class="{priceBox:index!=1,border:index==1}"          
+                >
+                <input v-model="filterInput1" v-if="index==0" type="number" :placeholder='item.name' class="input">
+                <input v-model="filterInput2" v-if="index==2" type="number" :placeholder='item.name' class="input">
+                </div>
               </div>
           </div>
            <div class="container-filter" style="border-bottom:1rpx solid #999;">
@@ -267,6 +270,8 @@ export default {
           {id:6,name:'牛栏'},
         ],
         materials:[],
+        filterInput1:'',
+        filterInput2:'',
         pageNum:1,
         pageSize:10
     }
@@ -279,7 +284,7 @@ export default {
   },
   mounted() {
     this.input=''
-    this.brandList()
+    this.brandList()    
   },
   onShow(){
     this.resultType='1'
@@ -290,17 +295,17 @@ export default {
   },
   onLoad(){
       this.isresult=true
-      addFindAll({type:'品牌'}).then(res=>{
-        console.log('所有品牌',res)
-        if(res.code==200&&res.data!=null){
-          this.cities=res.data
-        }
-      })
       let data=this.$root.$mp.query
       if(data.key==1){
         this.oncommType=Number(data.type)+1
         this.isresult=false
       }
+       addFindAll({type:'品牌'}).then(res=>{
+        console.log('所有品牌',res)
+        if(res.code==200&&res.data!=null){
+          this.cities=res.data
+        }
+      })
       console.log('query',data)
   },
   methods: {
@@ -359,14 +364,14 @@ export default {
     //筛选确认
     chooseClick(){
       console.log('筛选')
-      console.log(this.chooseHots2)
+      console.log(this.filterInput1,this.filterInput2)
       this.showRight2=false
       searchType({
         pageNum:this.pageNum,
         pageSize:this.pageSize,
         type:this.oncommType-1,
-        floorPrice:this.price2.id,
-        highestPrice:this.price2.id,
+        floorPrice:this.filterInput1,
+        highestPrice:this.filterInput2,
         up:this.talls2.name
         }).then(res=>{
         console.log('主页搜索商品',res)
@@ -389,9 +394,21 @@ export default {
     },
     //清空历史记录
     clearHieory(){
-      wx.removeStorageSync('materials')
-      this.materials=[[],[],[],[]]
-      console.log('kk')
+      let that=this
+      wx.showModal({
+        title: '提示',
+        content: '你确定要清空所有历史记录吗？',
+        success(res) {
+          if (res.confirm) {
+            console.log('用户点击确定')
+            wx.removeStorageSync('materials')
+            that.materials=[[],[],[],[]]
+          } else if (res.cancel) {
+            console.log('用户点击取消')
+          }
+        }
+      })
+      
     },
     //确认搜索design
     seeks(){
@@ -438,7 +455,7 @@ export default {
         }
     },
     //隐藏综合list
-    showzhlist(){
+    hidezhlist(){
       this.iszhList=''
     },
     onMap(name){
@@ -540,7 +557,7 @@ export default {
             });
         })
         this.cities = storeCity;
-        console.log(this.cities)
+        console.log('初始品牌',this.cities)
         // this.setData({
         //     cities : this.data.cities
         // })

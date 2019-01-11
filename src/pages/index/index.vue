@@ -23,6 +23,7 @@
             <i-tab
             v-for="tab in tabsList"
             :key="tab.id"
+            @click="changName(tab.name)"
             :title="tab.name"></i-tab>          
         </i-tabs>
     </div>
@@ -72,7 +73,10 @@ export default {
         ],
       value:'',
       current: '1',
-      current_scroll: '0'
+      current_scroll: '0',
+      pageNum:1,
+      pageSize:10,
+      name:''
     }
   },
 
@@ -90,16 +94,24 @@ export default {
       if(res.code==200&&res.data!=null){
           this.indexBanner=res.data.imgUrl  
       }
-    }),
-    //首页商品列表
-    commodityList({pageNum:'1',pageSize:10,type:'',name:''}).then(res=>{
-     console.log('商品列表',res)   
-        if(res.code==200&&res.data!=null){
-          this.commList=res.data.list              
-        }
-   })
+    })
+    this.indexList()
   },
   methods: {
+    indexList(){
+        //首页商品列表
+        commodityList({
+        pageNum:this.pageNum,
+        pageSize:this.pageSize,
+        type:'',
+        name:this.name
+        }).then(res=>{
+          console.log('商品列表',res)   
+              if(res.code==200&&res.data!=null){
+                this.commList=res.data.list              
+              }
+        })
+    },
     //获取用户id
      getUserInfos () {
       // 调用登录接口
@@ -123,19 +135,14 @@ export default {
         }
       })
     },
-    //商品列表  
-      // commodityList(){
-      //     getData({pageNum:'1',pageSize:10,type:'',name:''})
-      //       .then(res=>{
-      //         console.log('商品列表',res)   
-      //         if(res.code==200){
-      //              this.commList=res.data.list              
-      //         }       
-      //   })
-      // },
+    //切换热门产品
        handleChangeScroll (e) {      
         this. current_scroll=e.target.key
-        console.log(e.target.key)
+        // console.log(e.target)
+    },
+    //点击热门产品
+    changName(name){
+        console.log(name)
     },
     //跳转到搜索页面
     seekInput(){
