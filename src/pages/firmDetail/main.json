@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "公司详情",
+  "usingComponents": {
+    "i-modal": "/static/iview/modal/index",
+    "i-input": "/static/iview/input/index"
+}
+}

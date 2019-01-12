@@ -1,6 +1,6 @@
 <template>
 <div class="seekFirm">
-  <div class="seekFirm-items" v-for="(item, index) in commList" :key="index">
+  <div class="seekFirm-items" v-for="(item, index) in commList" :key="index" @click="fimrDetails(item)">
     <div class="seek-logo">
         <div class="item-img">
             <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
@@ -11,7 +11,7 @@
         </div>    
     </div>
     <div class="img2-list">
-        <div class="item-img2" @click="fimrDetails(1)">
+        <div class="item-img2">
             <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
         </div>
         <div class="item-img2">
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-      props: ['commList'],
+      props: ['commList','oncommType'],
       imgList:[
         {id:1,img:'http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png'},
         {id:2,img:'http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png'},
@@ -42,10 +42,10 @@ export default {
       
       },
       methods: {
-        fimrDetails(id){
-            console.log('公司id',id)
+        fimrDetails(item){
+            console.log('公司item',item)
             wx.navigateTo({
-              url:`../details/main?id=${id}`
+              url:`../firmDetail/main?name=${item.name}&type=${this.oncommType-1}&id=${item.id}`
             }) 
         }
       }

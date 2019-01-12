@@ -1,6 +1,6 @@
 <template>
 <div class="classFirm">
-  <div  class="seekFirm-items" v-for="(item, index) in commList" :key="index" @click="fimrDetails(1)">
+  <div  class="seekFirm-items" v-for="(item, index) in commList" :key="index" @click="fimrDetails(item)">
     <div class="seek-logo">
         <div class="item-img">
             <img :src="item.imgUrl" alt="">
@@ -47,18 +47,18 @@ export default {
       
       },
       methods: {
-        fimrDetails(id){
-            console.log('公司id',id)
+        fimrDetails(item){
+            console.log('公司item',item)
             wx.navigateTo({
-              url:`../details/main?id=${id}`
+              url:`../firmDetail/main?name=${item.name}&type=${this.type}&id=${item.id}`
             }) 
         },
         //点击商品跳转到搜索页面
-        onComm(item){
-          wx.navigateTo({
-              url:`../seek/main?name=${item.name}&type=${this.type}&key=${1}`
-            })
-        }
+        // onComm(item){
+        //   wx.navigateTo({
+        //       url:`../seek/main?name=${item.name}&type=${this.type}&id=${item.id}`
+        //     })
+        // }
       }
 }
 </script>

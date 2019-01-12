@@ -1,0 +1,286 @@
+
+@import '../../style/base.scss';
+.firmDetail{
+    width:100%;
+    height: 100%;
+    div{
+      box-sizing: border-box;
+    }
+    .bcg{
+        width: 100%;
+        height: 10px;
+        background: #F8F8F8;
+    }
+    .banner{
+      width:375px;
+      height:185px;
+      background: #ccc;
+      position: relative;
+      .bannerImg{
+        width:100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .firmDetail-phone{
+          position: absolute;
+          width: 350px;
+          min-height: 188px;
+          top:200px;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          margin: auto;
+          background: #fff;
+          border-radius: 6px;
+          .product{
+            margin-top: 20px;
+            padding:0 10px;
+            margin-bottom:80px;
+            .product-box{
+                height: 52px;
+                display: flex;
+                font-size: 12px;
+                margin-bottom: 20px;
+                .logo{
+                  width: 52px;
+                  height: 52px;
+                  position: relative;
+                  background: #ccc;
+                  margin-right: 20px;
+                  img{
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                  }
+                }
+                .nameBox{
+                  flex: 1;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                  .product-name{
+                    font-size: 16px;
+                    font-weight: 600;
+                    margin-right: 10px;
+                  }
+                  .merchant{
+                    padding:1px 4px;
+                    border-radius: 3px;
+                    background: #71D0B5;
+                    color: #fff;
+                  }
+                  .product-type{
+                    padding:1px 4px;
+                    border-radius: 3px;
+                    background: #DDF4ED;
+                    color: #71D0B5;
+                    margin-right: 10px;
+                  }
+                }
+            }
+            .product-details{
+                width: 100%;
+              height:20px;
+              font-size: 12px;
+              display: flex;
+              align-items: center;
+              margin-bottom: 10px;
+              position: relative;
+            //   padding-left: 20px;
+              img{
+                width:12px;
+                height: 15px;
+              }
+              .site{
+                color: #999999;
+                margin:0 5px;
+              }
+              .seekMap{
+                position: absolute;
+                right: 10px;
+                top: 3px;
+                color: #118EE9;
+              }
+            }
+            .phone2{
+                width: 100%;
+                height: 35px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #E8FBF5;
+                color: $color;
+                img{
+                    width: 24px;
+                    height: 22px;
+                    margin-right: 10px;
+                }
+            }
+          }
+      }
+    }
+    .hostBox{
+        width:350px;
+        min-height: 100px;
+        padding-top:130px;
+        margin:0 auto;
+        margin-bottom:80px;
+        .hostProuct,.brandDetail{
+            font-weight: 600;
+            font-size:18px;
+            margin-bottom: 20px;
+        }
+        .hostProuct-box{
+            width: 100%;
+            min-height: 126px;
+            display: flex;
+            flex-wrap:wrap;
+            justify-content: space-between;
+            .hostProuct-item{
+                width: 165px;
+                height: 126px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                font-size: 14px;
+                color:$fontSizeColor;
+            
+            }
+        }
+        .item-img{
+            width: 165px;
+            height:100px;
+            background: #ccc;
+            position: relative;  
+            border-radius: 6px;               
+            img{
+              width:100%;
+              height: 100%;
+              border-radius: 6px;
+              position: absolute;
+              top: 0;
+              left: 0;
+            }
+        }
+        .brand-details{
+            font-size: 14px;
+            margin-top: 20px;
+            line-height: 20px;
+        }
+        //设计团队
+        .userName{
+            width: 80px;
+            height: 110px;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin-right: 20px;
+            .userImg{
+                width: 61px;
+                height: 61px;
+                border-radius: 100%;
+            }
+        }
+        .road{
+            height: 90px;
+        }
+    }
+    
+    .state{
+      width: 100%;
+      min-height:50px;
+      padding:15px 10px;
+      display: flex;
+      // justify-content: space-between;
+      align-items: center;
+      .state-name{
+        width:100%;
+        height:50px;
+        font-size: 16px;
+        line-height: 20px;
+        // font-weight:600;
+        overflow: hidden;
+      }
+      .attention{
+        width: 57px;
+        height: 22px;
+        font-size: 12px;
+        color: #1DB389;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius:4px;
+        background: #DDF4ED;
+      }
+    }
+    .pinpai{
+      width: 100%;
+      padding:0 10px;
+      font-size: 14px;
+      .pinpai-box{
+        height: 45px;
+        display: flex;
+        align-items: center;
+        .title{
+          color: #999999;
+          width: 100px;
+        }
+      }
+    }
+   
+    .delivery{
+      width: 300px;
+      height: 40px;
+      position: fixed;
+      bottom:20px;
+      left: 0;
+      right: 0;
+      margin:auto;
+      font-size: 14px;
+      color: #fff;
+      
+      .apply,.order{
+        display:inline-block;
+        height: 40px;
+        width: 50%;
+        text-align: center;
+        line-height: 40px;
+      }
+      .apply{
+        background: #FFA61F;
+        border-radius:20px 0 0 20px;
+      }
+      .order{
+        background: #FF8257;
+         border-radius:0 20px 20px 0;
+      }
+    }
+    .handleCloses{
+      height: 45px;
+      width:100%;
+      border: 1px solid #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding:0 10px;
+      box-sizing: border-box;
+      margin:20px 0;
+      font-size: 14px;
+      img{
+        width: 14px;
+        height: 21px;
+      }
+      .inputs{
+        flex: 1;
+        padding:0 10px;
+        font-size: 14px;
+      }
+    }
+}

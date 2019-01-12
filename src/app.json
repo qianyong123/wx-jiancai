@@ -11,7 +11,8 @@
     "pages/PlotDetails/main", 
     "pages/register/main",   
     "pages/Myattention/main",  
-    "pages/Myspell/main",  
+    "pages/Myspell/main", 
+    "pages/firmDetail/main", 
     "pages/counter/main"
   ],
   "window": {

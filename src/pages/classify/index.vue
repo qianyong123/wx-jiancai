@@ -56,8 +56,8 @@ export default {
           {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
         ],
         classiifyType:[
-          {id:1,name:'设计馆'},
-          {id:2,name:'建材馆'},
+          {id:1,name:'建材馆'},
+          {id:2,name:'设计馆'},
           {id:3,name:'服务馆'},
           {id:4,name:'经销商馆'},
         ],

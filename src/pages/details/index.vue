@@ -44,7 +44,7 @@
             <img src="/static/Icon/map2.png" alt="">
             <span class="site">地址：</span>
             <span>宜兴市巷头西路298号</span>
-            <span class="seekMap">查看地图</span>
+            <span @click="navMap(longitude,latitude)" class="seekMap">查看地图</span>
         </div>
         <div class="product-details">
             <img src="/static/Icon/time.png" alt="">
@@ -58,13 +58,13 @@
         </div>     
       </div>
       <div class="delivery">
-          <span class="apply" @click="handleClose">申请送样</span>
-          <span class="order" @click="handleClose">免费预约</span>
+          <span class="apply" @click="handleClose(1)">申请送样</span>
+          <span class="order" @click="handleClose(2)">免费预约</span>
       </div>
-      <i-modal title="申请送样" :visible=" visible1 " @ok="handleClose1" @cancel="handleClose1">
+      <i-modal :title="modalTiele1" :visible=" visible1 " @ok="handleClose1" @cancel="handleClose1">
         <view class="handleCloses">
             <img src="/static/Icon/phone4.png" alt="">
-            <input v-model="input" type="number" placeholder="输入电话号码">
+            <input class="inputs" v-model="input" type="number" placeholder="输入电话号码,我们将为你回电服务">
         </view>
     </i-modal>
   </div>
@@ -78,7 +78,10 @@ export default {
     return {
       visible1:false,
       title:'',
-      input:''
+      input:'',
+      modalTiele1:'',
+      longitude:'1562', //经度
+      latitude:'56461', //经度
     }
   },
 
@@ -87,11 +90,24 @@ export default {
   },
 
   methods: {
-    handleClose(){
+    handleClose(id){
       this.visible1=true
+      if(id==1){
+        this.modalTiele1='申请送样'
+      }else{
+        this.modalTiele1='免费预约'
+      }
     },
     handleClose1(){
       this.visible1=false
+      console.log(this.input)
+    },
+    //查看点图
+    navMap(long,lat){
+        console.log(long,lat)
+        wx.navigateTo({
+          url:`../map/main`
+      })
     }
   },
   mounted() {
@@ -135,15 +151,14 @@ export default {
     }
     .state{
       width: 100%;
-      height:50px;
-      padding:10px;
+      min-height:50px;
+      padding:15px 10px;
       display: flex;
       // justify-content: space-between;
       align-items: center;
-      margin:10px 0;
       .state-name{
-        width:300px;
-        height: 50px;
+        width:100%;
+        height:50px;
         font-size: 16px;
         line-height: 20px;
         // font-weight:600;
@@ -276,12 +291,21 @@ export default {
     .handleCloses{
       height: 45px;
       width:100%;
-      // border: 1px solid #ccc;
+      border: 1px solid #ccc;
       display: flex;
-      align-content: center;
+      justify-content: space-between;
+      align-items: center;
+      padding:0 10px;
+      box-sizing: border-box;
+      margin:20px 0;
       img{
         width: 14px;
         height: 21px;
+      }
+      .inputs{
+        flex: 1;
+        padding:0 10px;
+        font-size: 14px;
       }
     }
 }

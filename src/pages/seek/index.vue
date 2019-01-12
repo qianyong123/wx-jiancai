@@ -82,7 +82,7 @@
           </div>
       </div> -->
       <seek-result v-if="oncommType==1" :commList='commList' ></seek-result>
-      <seek-firm v-else :commList='commList' ></seek-firm>
+      <seek-firm v-else :commList='commList' :oncommType='oncommType'></seek-firm>
       <div class="nocommList" v-if="commList.length<1">没有找到相关数据！</div>
     </div>
     <!-- 品牌右侧弹框 -->

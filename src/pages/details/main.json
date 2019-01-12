@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "详情",
+  "navigationBarTitleText": "商品详情",
   "usingComponents": {
     "i-modal": "/static/iview/modal/index"
 }
