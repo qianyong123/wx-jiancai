@@ -1,11 +1,10 @@
 <template>
   <div class="map" >
-      <div class="name">地图</div>
       <map
         id="map"
         :longitude="markers[0].longitude"
         :latitude="markers[0].latitude"
-        scale="16"
+        scale="14"
         :markers="markers"
         @markertap="markertap"
         show-location
@@ -26,10 +25,10 @@ export default {
       markers: [{
         iconPath: '/static/Icon/map.png',
         id: 0,
-        latitude:'30.625480688041968',
-        longitude: '104.03000271368147',
-        width: 25,
-          height: 25
+        latitude:'30.631273',
+        longitude: '104.03614',
+        width: 30,
+          height: 30 
     }],
     polyline: [{
       points: [{
@@ -67,11 +66,11 @@ export default {
   },
   markertap(e) {
     console.log('markertap',e.mp.markerId)
-      wx.openLocation({
-        latitude: this.markers[0].latitude,
-        longitude:this.markers[0].longitude,
-        scale: 18
-    })
+    //   wx.openLocation({
+    //     latitude: this.markers[0].latitude,
+    //     longitude:this.markers[0].longitude,
+    //     scale: 18
+    // })
   },
   controltap(e) {
     console.log('controltap',e)
@@ -84,17 +83,17 @@ export default {
     let data=this.$root.$mp.query
     let that=this
     console.log(data)
-    // wx.getLocation({
-    //   type: 'gcj02',
-    //   success(res){
-    //     console.log(res)
-    //     that.markers[0].latitude = res.latitude
-    //     that.markers[0].longitude = res.longitude
-    //     const speed = res.speed
-    //     const accuracy = res.accuracy
-    //   console.log(that.markers)
-    //   }
-    // })
+    wx.getLocation({
+      type: 'gcj02',
+      success(res){
+        console.log(res)
+        that.markers[0].latitude = res.latitude
+        that.markers[0].longitude = res.longitude
+        const speed = res.speed
+        const accuracy = res.accuracy
+      console.log(that.markers)
+      }
+    })
   }
 }
 </script>
@@ -102,7 +101,8 @@ export default {
 <style lang="scss" scoped>
   .map{
     width: 100%;
-    height: 100%;
+    height:300px;
+
     .name{
       width:100%;
       margin: 30px auto;

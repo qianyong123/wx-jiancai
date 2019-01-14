@@ -1,5 +1,5 @@
 <template>
-  <div class="house" >
+  <div class="house" @click="houseDetail(houseList.id)">
         <div class="img"></div>
         <div class="site">
             <div>
@@ -23,7 +23,7 @@
 
 
 export default {
-props: ['forumList'],
+props: ['houseList'],
   data () {
     return {
       type:[
@@ -39,7 +39,12 @@ props: ['forumList'],
   },
 
   methods: {
-    
+    houseDetail(id){
+        console.log('小区',id)
+        wx.navigateTo({
+            url: `../PlotDetails/main?id=${id}`
+            })
+    }
   },
 
   created () {

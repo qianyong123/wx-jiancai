@@ -67,6 +67,13 @@
             height:100%;         
             padding: 10px;
             box-sizing: border-box;
+            .ondata{
+                width: 100%;
+                margin-top: 70px;
+                text-align: center;
+                color: #ccc;
+                font-size: 16px;
+            }
             .classiify-item{
                 width: 250px;
                 height:100px;
@@ -78,7 +85,7 @@
                     height: 100%;
                     width: 63px;
                     text-align: center;
-                    margin-right:15px;
+                    margin-right:20px;
                     margin-bottom: 10px;
                     .name2{
                         width: 100%;

@@ -138,11 +138,12 @@ export default {
     //切换热门产品
        handleChangeScroll (e) {      
         this. current_scroll=e.target.key
-        // console.log(e.target)
+        console.log(e.target)
     },
     //点击热门产品
     changName(name){
         console.log(name)
+        // this.name=name
     },
     //跳转到搜索页面
     seekInput(){

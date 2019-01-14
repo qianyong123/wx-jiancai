@@ -261,9 +261,14 @@
                     width: 58px;
                     height: 35px;
                     margin-right:20px;
+                    background: #ccc;
+                    position: relative;
                     img{
                        width: 100%;
                        height: 100%; 
+                       position: absolute;
+                       top: 0;
+                       left: 0;
                     }
                 }
                 
@@ -345,7 +350,7 @@
             }
             .huanbao{
                 margin-top:20px;               
-                display: flex;
+                display: flex;               
                 .tall{
                     width: 45px;
                     height: 36px;
@@ -399,14 +404,16 @@
                 }
            }
         }
+      
         
       
     }
     .nocommList{
+        position: fixed;
+        top:40%;
+        left: 0;
         width: 100%;
-        height: 200px;
         text-align: center;
-        line-height: 200px;
         font-size: 14px;
     }
 }

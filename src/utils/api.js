@@ -11,6 +11,7 @@ export const userInfo=(data)=>{
 }
 //商品列表
 export const commodityList=(data)=>{
+    wx.showLoading({title: '加载中...'})
        return request.request(`/product/list`, qs.stringify(data),{method:'get',headers:{nihao:'afsfs'}})
    }
 //banner
@@ -21,7 +22,22 @@ export const indexBanner=(data)=>{
 export const searchType=(data)=>{
     return request.request(`/search/type`, qs.stringify(data),{method:'get',})
 }
+//关注、取消关注商品
+export const productAttention=(data)=>{
+    return request.request(`/product/attention`, qs.stringify(data),{method:'post',})
+}
 //搜索页面所有品牌信息
 export const addFindAll=(data)=>{
-    return request.request(`/designCompany/findAll`, qs.stringify(data),{method:'get',})
+    return request.request(`/dealer/brand`, qs.stringify(data),{method:'get',})
+}
+
+
+    //分类/sort
+//分类页面列表
+export const classSort=(data)=>{
+    return request.request(`/sort`, qs.stringify(data),{method:'get',})
+}
+//分类页面建材搜索商品列表
+export const sortProduct=(data)=>{
+    return request.request(`/sortProduct`, qs.stringify(data),{method:'get',})
 }

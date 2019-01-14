@@ -34,7 +34,8 @@
                   <div class="name2">{{item.name}}</div>
               </div>
            </div>  
-            <seek-firm v-else :commList='classiifyList' :type='type'></seek-firm>     
+            <seek-firm v-else :commList='classiifyList' :type='type'></seek-firm>  
+            <div v-if="classiifyList.length<1" class="ondata">暂时还没有数据</div>   
           </scroll-view>
       </div>
   </div>
@@ -42,6 +43,7 @@
 
 <script>
 import seekFirm from './seekFirm'
+import {classSort} from '../../utils/api.js'
 export default {
   data () {
     return {
@@ -78,11 +80,23 @@ export default {
    //切换分类类型
    types(index){
      this.type=index
+     this.classSorts()
    },
    //点击商品跳转到搜索页面
    onComm(item){
      wx.navigateTo({
         url:`../seek/main?name=${item.name}&type=${this.type}&key=${1}`
+      })
+   },
+   //分类列表
+   classSorts(){
+     classSort({
+        type:this.type
+      }).then(res=>{
+        console.log('建材馆列表',res)
+        if(res.code==200&&res.data!=null){
+            this.classiifyList=res.data
+        }
       })
    }
   },
@@ -94,6 +108,7 @@ export default {
   },
   onLoad(){
     console.log('分类2')
+    this.classSorts()
   }
 }
 </script>

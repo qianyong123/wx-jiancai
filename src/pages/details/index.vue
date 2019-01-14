@@ -64,7 +64,9 @@
       <i-modal :title="modalTiele1" :visible=" visible1 " @ok="handleClose1" @cancel="handleClose1">
         <view class="handleCloses">
             <img src="/static/Icon/phone4.png" alt="">
-            <input class="inputs" v-model="input" type="number" placeholder="输入电话号码,我们将为你回电服务">
+            <div class="inputs">
+              <input v-model="input" type="number" placeholder="输入电话号码,我们将为你回电服务">
+            </div>
         </view>
     </i-modal>
   </div>
@@ -290,14 +292,14 @@ export default {
     }
     .handleCloses{
       height: 45px;
-      width:100%;
+      width:90%;
       border: 1px solid #ccc;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding:0 10px;
       box-sizing: border-box;
-      margin:20px 0;
+      margin:20px auto;
       img{
         width: 14px;
         height: 21px;

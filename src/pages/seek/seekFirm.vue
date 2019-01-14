@@ -1,6 +1,6 @@
 <template>
-<div class="seekFirm">
-  <div class="seekFirm-items" v-for="(item, index) in commList" :key="index" @click="fimrDetails(item)">
+<scroll-view scroll-y @scrolltolower="$emit('onload',2)" class="seekFirm">
+  <div  class="seekFirm-items" v-for="(item, index) in commList" :key="index" @click="fimrDetails(item)">
     <div class="seek-logo">
         <div class="item-img">
             <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
@@ -22,7 +22,7 @@
         </div>
     </div>  
   </div>
-</div>
+</scroll-view>
 </template>
 
 <script>
@@ -47,7 +47,10 @@ export default {
             wx.navigateTo({
               url:`../firmDetail/main?name=${item.name}&type=${this.oncommType-1}&id=${item.id}`
             }) 
-        }
+        },
+        // onload(){
+        //   console.log('加载下一页')
+        // }
       }
 }
 </script>
@@ -56,12 +59,12 @@ export default {
 @import '../../style/base.scss';
 .seekFirm{
     width:350px;
+    height:100%;
     margin:20px auto;
     background: #fff;
     .seekFirm-items{
       padding: 15px;
       width: 100%;
-      min-height:150px;
       background: #fff;
       margin-bottom: 20px;
       font-size: 14px; 

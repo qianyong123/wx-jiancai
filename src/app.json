@@ -13,6 +13,8 @@
     "pages/Myattention/main",  
     "pages/Myspell/main", 
     "pages/firmDetail/main", 
+    "pages/articleDetail/main",
+    "pages/moreMessge/main",
     "pages/counter/main"
   ],
   "window": {

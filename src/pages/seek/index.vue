@@ -43,7 +43,7 @@
           <div @click="clearHieory" v-if="materials[oncommType-1].length>0" class="clear-history">清空历史记录</div>
       </div>
     </div>
-    <div v-else>
+    <div style="height:100%;width:100%" v-else>
         <div v-if="oncommType==1" class="seetResult">
           <div class="div" v-for="comm in filterList" :key="comm.id">
             <p :class="{'result-span':resultType==comm.id}" @click.stop="resultTypes(comm.id)">
@@ -81,8 +81,8 @@
               </div>
           </div>
       </div> -->
-      <seek-result v-if="oncommType==1" :commList='commList' ></seek-result>
-      <seek-firm v-else :commList='commList' :oncommType='oncommType'></seek-firm>
+      <seek-result v-if="oncommType==1" :commList='commList' @onload='onload'></seek-result>
+      <seek-firm v-else :commList='commList' :oncommType='oncommType' @onload='onload'></seek-firm>
       <div class="nocommList" v-if="commList.length<1">没有找到相关数据！</div>
     </div>
     <!-- 品牌右侧弹框 -->
@@ -150,7 +150,7 @@
                    class="tall">{{item.name}}</div>                 
               </div>
           </div>
-          <div class="choose-box">
+          <!-- <div class="choose-box">
               <span class="choose-span">选购热点</span>
               <div class="choose-hots">
                   <div 
@@ -160,8 +160,10 @@
                    @click="cutHots(item,index)"
                    :key="index">{{item.name}}</div>                   
               </div>
+          </div> -->
+          <div style="margin-top:40px;">
+            <i-button  @click="chooseClick" type="warning" size="small">确定</i-button>
           </div>
-          <i-button @click="chooseClick" type="warning" size="small">确定</i-button>
         </scroll-view>
     </i-drawer>
   </div>
@@ -171,7 +173,7 @@
 import seekResult from './seekResult'
 import seekFirm from './seekFirm'
 import {pinyin} from '../../utils/pinyin.js'
-import {searchType,addFindAll} from '../../utils/api.js'
+import {searchType,addFindAll,sortProduct} from '../../utils/api.js'
 export default {
   data () {
     return {
@@ -258,7 +260,16 @@ export default {
         {id:3,name:'新品优先'},
       ],
        commList:[
-        {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+         {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+          {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+           {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+            {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+             {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+              {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+               {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+                {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+                 {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+                  {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
         ],
         //热门品牌
         hotbrands:[
@@ -272,6 +283,8 @@ export default {
         materials:[],
         filterInput1:'',
         filterInput2:'',
+        dataType:'1',//下拉加载类型
+        total:0,//总条数
         pageNum:1,
         pageSize:10
     }
@@ -284,13 +297,19 @@ export default {
   },
   mounted() {
     this.input=''
-    this.brandList()    
+      this.brandList()    
   },
   onShow(){
     this.resultType='1'
     this.zhtype='1'
     let materials=wx.getStorageSync('materials')||[[],[],[],[]]
     this.materials=materials
+    addFindAll({type:'品牌'}).then(res=>{
+        console.log('所有品牌',res)
+        if(res.code==200&&res.data!=null){
+          this.cities=res.data
+        }
+      })
     console.log(materials)
   },
   onLoad(){
@@ -299,14 +318,19 @@ export default {
       if(data.key==1){
         this.oncommType=Number(data.type)+1
         this.isresult=false
+        this.dataType=6
+        this.sortProducts(data)
       }
-       addFindAll({type:'品牌'}).then(res=>{
-        console.log('所有品牌',res)
-        if(res.code==200&&res.data!=null){
-          this.cities=res.data
-        }
-      })
+
       console.log('query',data)
+  },
+  onReachBottom(){
+    console.log('上拉')
+    //  wx.showLoading({
+    //   title: '玩命加载中',
+    // })
+    // 隐藏加载框
+        // wx.hideLoading();
   },
   methods: {
     //点击取消返回首页
@@ -315,8 +339,39 @@ export default {
         url: '/pages/index/main'
       })
     },
-
-
+    //加载下一页数据
+    onload(id){
+      console.log('加载下一页',id)
+      let page=Math.ceil(this.total/20)
+      console.log(page)
+      if(this.dataType=='1'&&page>0){
+        if(this.pageNum>=page){
+            return
+        }
+        this.pageNum=this.pageNum+1
+        searchType({pageNum:this.pageNum,pageSize:this.pageSize,type:this.oncommType-1,keyword:this.input}).then(res=>{
+          console.log('主页搜索商品2',res)
+          if(res.code==200&&res.data!=null){
+              this.commList=this.commList.concat(res.data.list)       
+          }
+        })
+      }
+     
+    },
+    //建材商品搜索列表
+    sortProducts(item){
+        this.pageNum=1  
+        sortProduct({
+          pageNum:this.pageNum,
+          pageSize:this.pageSize,
+          name:item.name,
+        }).then(res=>{
+          console.log('建材搜索商品',res)
+          if(res.code==200&&res.data!=null){
+              this.commList=res.data  
+          }
+        })
+    },
     //显示隐藏品牌右边的弹框
     toggright1s(){
       this.showRight1=!this.showRight1
@@ -334,6 +389,8 @@ export default {
     //点击热门品牌
     onpinpai(item){
       console.log(item.name)
+        this.pageNum=1
+        this.dataType=4
       this.toggright1s()
       searchType({pageNum:this.pageNum,
       pageSize:this.pageSize,
@@ -343,6 +400,7 @@ export default {
         console.log('热门品牌商品',res)
         if(res.code==200&&res.data!=null){
             this.commList=res.data.list
+            this.total=res.data.total
         }
       })
     },
@@ -364,6 +422,8 @@ export default {
     //筛选确认
     chooseClick(){
       console.log('筛选')
+      this.pageNum=1
+      this.dataType=5
       console.log(this.filterInput1,this.filterInput2)
       this.showRight2=false
       searchType({
@@ -374,9 +434,10 @@ export default {
         highestPrice:this.filterInput2,
         up:this.talls2.name
         }).then(res=>{
-        console.log('主页搜索商品',res)
+        console.log('主页搜索筛选商品',res)
         if(res.code==200&&res.data!=null){
             this.commList=res.data.list
+             this.total=res.data.total
         }
       })
     },
@@ -386,37 +447,36 @@ export default {
     keyCode(e){
       console.log(e)
       this.input=e.target.value
-      if(this.input==''){
-          this.isresult=true
-          this.resultType='1'
-          this.zhtype='1'
-      }
+      // if(this.input==''){
+      //     // this.isresult=true
+      //     this.resultType='1'
+      //     this.zhtype='1'
+      // }
     },
     //清空历史记录
     clearHieory(){
       let that=this
-      wx.showModal({
-        title: '提示',
-        content: '你确定要清空所有历史记录吗？',
-        success(res) {
-          if (res.confirm) {
-            console.log('用户点击确定')
-            wx.removeStorageSync('materials')
-            that.materials=[[],[],[],[]]
-          } else if (res.cancel) {
-            console.log('用户点击取消')
-          }
-        }
-      })
-      
+       wx.removeStorageSync('materials')
+      this.materials=[[],[],[],[]]     
     },
     //确认搜索design
     seeks(){
       console.log('搜索',this.input)  
+      // if(this.input==''){
+      //   wx.showToast({
+      //     title: '搜索内容不能为空！',
+      //     icon: 'none',
+      //     duration:1500
+      //   })
+      //   return
+      // }
+      this.dataType=1
+      this.zhtype=1
       searchType({pageNum:this.pageNum,pageSize:this.pageSize,type:this.oncommType-1,keyword:this.input}).then(res=>{
         console.log('主页搜索商品',res)
         if(res.code==200&&res.data!=null){
             this.commList=res.data.list
+             this.total=res.data.total
         }
       })
         this.isresult=false
@@ -485,39 +545,42 @@ export default {
     //点击综合里面的item
     zhitem(id){
         this.zhtype=id
+        this.pageNum=1
+        this.dataType=id
         if(id==1){
           searchType({pageNum:this.pageNum,pageSize:this.pageSize,type:this.oncommType-1,keyword:this.input}).then(res=>{
             console.log('搜索综合商品',res)
             if(res.code==200&&res.data!=null){
                 this.commList=res.data.list
+                 this.total=res.data.total
             }
           })
         }
         else if(id==2){
-          console.log('关注排序')
            searchType({
              pageNum:this.pageNum,
              pageSize:this.pageSize,
              type:this.oncommType-1,
              attentionCount:'0',
             }).then(res=>{
-            console.log('搜索综合商品',res)
+            console.log('新品排序',res)
             if(res.code==200&&res.data!=null){
                 this.commList=res.data.list
+                 this.total=res.data.total
             }
           })
         }
          else if(id==3){
-          console.log('综合排序')
            searchType({
              pageNum:this.pageNum,
              pageSize:this.pageSize,
              type:this.oncommType-1,
              newProduct:'0',
              }).then(res=>{
-            console.log('搜索综合商品',res)
+            console.log('新品排序',res)
             if(res.code==200&&res.data!=null){
                 this.commList=res.data.list
+                 this.total=res.data.total
             }
           })
         }
@@ -539,6 +602,7 @@ export default {
     },
     brandList(){
         let storeCity = new Array(26);
+        let name=/^[\u4E00-\u9FA5]$/
         const words = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
         words.forEach((item,index)=>{
             storeCity[index] = {
@@ -548,13 +612,18 @@ export default {
         })
         this.wordsIndex=words
         this.cities.forEach((item)=>{
-            let firstName = pinyin.getCamelChars(item.name).substring(0,1);
-            let index = words.indexOf( firstName );
-            storeCity[index].list.push({
-                name : item.name,
-                key : firstName,
-                imgUrl:item.imgUrl
-            });
+          let firstName=null   
+            console.log(item.brandName)
+          if(name.test(item.brandName.slice(0,1))){
+             firstName = pinyin.getCamelChars(item.brandName).substring(0,1); 
+                let index = words.indexOf( firstName );
+              storeCity[index].list.push({
+                  name : item.brandName,
+                  key : firstName,
+                  // imgUrl:item.brandLogo
+              });            
+          }
+         
         })
         this.cities = storeCity;
         console.log('初始品牌',this.cities)

@@ -127,7 +127,7 @@ export default {
         }
         .site{
           height:16px;
-           line-height: 16px;
+          line-height: 16px;
           width: 100%;
           font-size: 14px;
           color: #ccc;

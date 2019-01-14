@@ -1,5 +1,5 @@
 <template>
-  <div class="forum" >
+  <div class="forum" @click="forumItem(forumList.id)">
       <div class="forum-left">
           <div class="title">{{forumList.text}}</div>
           <div class="name">
@@ -33,7 +33,12 @@ export default {
         }
     },
   methods: {
-    
+      forumItem(id){
+          console.log('文章',id)
+          wx.navigateTo({
+            url: `../articleDetail/main?id=${id}`
+            })
+      }
   },
 
   created () {

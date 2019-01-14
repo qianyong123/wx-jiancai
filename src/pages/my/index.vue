@@ -6,7 +6,7 @@
           </div>
           <div>{{userInfo.nickName}}</div>
       </div>
-      <div class="my-list" v-for="item in list" :key="item.id">
+      <div class="my-list" v-for="item in list" :key="item.id" @click="myMessge(item.id)">
         <div class="list-left">
             <img class="img" :src="item.imgUrl" alt="">
             <span>{{item.name}}</span>
@@ -49,13 +49,17 @@ export default {
       })
   },
   methods: {
-    bindViewTap () {
-      const url = '../logs/main'
-      wx.navigateTo({ url })
-    },
- 
-    clickHandle (msg, ev) {
-      console.log('clickHandle:', msg, ev)
+    myMessge(id){
+      if(id==1){
+        wx.navigateTo({
+          url: '../register/main'
+        })
+      }
+      else if(id==2){
+          wx.navigateTo({
+          url: '../Myattention/main'
+        })
+      }
     }
   },
 

@@ -56,9 +56,9 @@
             </div>
           </div>
           <scroll-view scroll-y class="forum-item">
-            <house v-for="(item,index) in forumList" 
+            <house v-for="(item,index) in houseList" 
             :key="index" 
-            :forumList='item'
+            :houseList='item'
              :index='index'></house>
              <div v-if="isFilter1!=''" class="zheban"></div>
           </scroll-view>
@@ -75,10 +75,17 @@ export default {
     return {
       forumList:[
         {id:1,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+        {id:2,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+        {id:3,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+        {id:4,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+        {id:5,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+      ],
+       houseList:[
         {id:1,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:1,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:1,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:1,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+        {id:2,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+        {id:3,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+        {id:4,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+        {id:5,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
       ],
       types:0,
       input:'',
@@ -193,8 +200,9 @@ export default {
       }
     }
       .community-forum{
+        margin-top: 20px;
         width: 100%;
-        height:100%;
+        height:90%;
         padding-top: 36px;
       } 
     .community-house{
