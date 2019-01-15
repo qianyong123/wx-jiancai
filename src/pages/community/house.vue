@@ -3,18 +3,19 @@
         <div class="img"></div>
         <div class="site">
             <div>
-                <span class="xiaoqu-name">东九一号</span>
-                <span class="states">在售</span>
+                <span class="xiaoqu-name">{{houseList.name}}</span>
+                <span v-if="houseList.status==0" class="states">在售</span>
+                <span v-else class="states">未售</span>
             </div>
-            <div class="xiaoqu-site">宜兴-宜城街道</div>
+            <div class="xiaoqu-site">{{houseList.address}}</div>
             <div>
                 <span class="type">住宅</span>
                  <span class="type">商业区</span>
             </div>
         </div>
         <div class="xiaoqu-price">
-            <div class="price">13000元/平</div>
-            <div>建面 120-250㎡</div>
+            <div class="price">{{houseList.price}}元/平</div>
+            <div>建面 {{houseList.area}}㎡</div>
         </div>
   </div>
 </template>
@@ -118,7 +119,7 @@ props: ['houseList'],
         .price{
             font-size: 14px;
             color: #f00;
-            margin-bottom:4px;
+            margin-bottom:2px;
             font-weight: 600;
         }
     }

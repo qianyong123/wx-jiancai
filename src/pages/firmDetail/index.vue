@@ -128,7 +128,7 @@
             class="inputs"
             v-model="input"
              type="number"     
-              placeholder="输入电话号码,我们将为你回电">
+              placeholder="输入电话号码,我们将为你回电服务">
         </view>
     </i-modal>
   </div>

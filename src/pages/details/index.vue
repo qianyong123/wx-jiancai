@@ -1,13 +1,26 @@
 <template>
   <div class="details" >
-      <div class="img">
-
+      <div class="imgBanner">
+        <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+          <div class="spell">
+              <div class="spellImg">
+                  <div>
+                    <img src="/static/Icon/spell4.png" alt="">
+                  </div>
+                  <div>5人团</div>
+              </div>             
+              <div style="font-weight: 600;">2/5开团</div>
+          </div>
       </div>
       <div class="state">
           <div class="state-name">奥普（AUPU）浴霸QDP6626B集成吊顶大功率风暖浴霸 智能触摸开关 8cm薄</div>
-          <!-- <div class="attention">
-              <img src="" alt="">
+          <div class="attention">
+              <img src="/static/Icon/myspell1.png" alt="">
               <span>关注</span>
+          </div>
+          <!-- <div class="attention">
+              <img src="/static/Icon/myspell2.png" alt="">
+              <span>已关注</span>
           </div> -->
       </div>
       <div class="bcg"></div>
@@ -57,11 +70,15 @@
             <span>13612345678</span>
         </div>     
       </div>
-      <div class="delivery">
+      <div class="oncePsellBox">
+          <div class="delivery">
           <span class="apply" @click="handleClose(1)">申请送样</span>
           <span class="order" @click="handleClose(2)">免费预约</span>
+          </div>
+          <div class="oncePsell" @click="handleClose(3)">立即拼团</div>
       </div>
-      <i-modal :title="modalTiele1" :visible=" visible1 " @ok="handleClose1" @cancel="handleClose1">
+      
+      <i-modal :title="modalTiele1" :visible=" visible1 " @ok="handleClose1(1)" @cancel="handleClose1(2)">
         <view class="handleCloses">
             <img src="/static/Icon/phone4.png" alt="">
             <div class="inputs">
@@ -73,7 +90,7 @@
 </template>
 
 <script>
-import {getData} from '../../utils/api.js'
+import {getData,productDetail} from '../../utils/api.js'
 
 export default {
   data () {
@@ -96,13 +113,26 @@ export default {
       this.visible1=true
       if(id==1){
         this.modalTiele1='申请送样'
-      }else{
+      }
+      else if(id==2){
         this.modalTiele1='免费预约'
       }
+      else if(id==3){
+        this.modalTiele1='立即拼团'
+      }
     },
-    handleClose1(){
+    handleClose1(index){
       this.visible1=false
-      console.log(this.input)
+      if(index==1){
+          productDetail({
+            businessPhone:'1365555555',
+            name:'奥普',
+            phone:this.input,
+            type:'建材-'+`${this.modalTiele1}`
+          }).then(res=>{
+            console.log('登记信息',res)
+          })
+      }
     },
     //查看点图
     navMap(long,lat){
@@ -118,9 +148,9 @@ export default {
   onShow(){
     let data=this.$root.$mp.query
     console.log(data)
-      getData(`/product/detail/${data.id}`).then(res=>{
-        console.log('商品详情',res)
-      })
+      // getData(`/product/detail/${data.id}`).then(res=>{
+      //   console.log('商品详情',res)
+      // })
   }
 }
 </script>
@@ -138,7 +168,7 @@ export default {
         height: 10px;
         background: #F8F8F8;
     }
-    .img{
+    .imgBanner{
       width:375px;
       height: 375px;
       background: #ccc;
@@ -150,6 +180,46 @@ export default {
         top: 0;
         left: 0;
       }
+      .spell{
+        width: 100%;
+        height: 55px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: #28D591;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        color: #fff;
+        font-size: 14px;
+        .spellImg{
+            width: 90px;
+            display: flex;
+            height: 23px;
+            border: 1px solid #fff;
+            border-radius: 3px;
+            margin-right: 10px;
+            div:nth-child(1){
+              width: 30px;
+              height: 23px;            
+              background: #fff;
+              position: relative;
+               img{
+                 position: absolute;
+                 top:0px;
+                 left:5px;
+                width: 17px;
+                height: 21px;
+              }
+            }
+            div:nth-child(2){
+              width: 60px;
+              line-height: 23px;
+              text-align: center;
+            }
+        
+        }
+      }
     }
     .state{
       width: 100%;
@@ -159,7 +229,7 @@ export default {
       // justify-content: space-between;
       align-items: center;
       .state-name{
-        width:100%;
+        width:298px;
         height:50px;
         font-size: 16px;
         line-height: 20px;
@@ -174,8 +244,14 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        border-radius:4px;
+        border-radius:11px 0 0 11px;
         background: #DDF4ED;
+        margin-left: 10px;
+        img{
+          width: 13px;
+          height: 11px;
+          margin-right: 5px;
+        }
       }
     }
     .pinpai{
@@ -195,7 +271,7 @@ export default {
     .product{
       margin-top: 20px;
       padding:0 10px;
-      margin-bottom:80px;
+      margin-bottom:140px;
       .product-box{
           height: 52px;
           display: flex;
@@ -263,33 +339,52 @@ export default {
         }
       }
     }
-    .delivery{
-      width: 300px;
-      height: 40px;
+    .oncePsellBox{
+      width:288px;
       position: fixed;
-      bottom:20px;
+      bottom:10px;
       left: 0;
       right: 0;
-      margin:auto;
-      font-size: 14px;
-      color: #fff;
-      
-      .apply,.order{
-        display:inline-block;
+      margin: auto;
+      .delivery{
+        width:288px;
         height: 40px;
-        width: 50%;
-        text-align: center;
+        // position: fixed;
+        // bottom:20px;
+        // left: 0;
+        // right: 0;
+        font-size: 14px;
+        color: #fff;
+        
+        .apply,.order{
+          display:inline-block;
+          height: 40px;
+          width: 50%;
+          text-align: center;
+          line-height: 40px;
+        }
+        .apply{
+          background: #FFA61F;
+          border-radius:20px 0 0 20px;
+        }
+        .order{
+          background: #FF8257;
+          border-radius:0 20px 20px 0;
+        }
+      }
+        .oncePsell{
+        width: 288px;
+        height: 40px;
+        text-align:center;
         line-height: 40px;
-      }
-      .apply{
-        background: #FFA61F;
-        border-radius:20px 0 0 20px;
-      }
-      .order{
-        background: #FF8257;
-         border-radius:0 20px 20px 0;
+        background: #FF8E34;
+        color: #fff;
+        border-radius:20px;
+        margin-top:20px;
       }
     }
+    
+  
     .handleCloses{
       height: 45px;
       width:90%;
@@ -307,7 +402,7 @@ export default {
       .inputs{
         flex: 1;
         padding:0 10px;
-        font-size: 14px;
+        font-size: 12px;
       }
     }
 }

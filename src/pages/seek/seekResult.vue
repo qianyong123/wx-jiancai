@@ -1,7 +1,7 @@
 <template>
 <scroll-view scroll-y @scrolltolower="$emit('onload',1)" class="seekResultBox">
   <div class="seekResult" >
-      <item v-for="item in commList" :key="item.id" :text='item'></item>
+      <item v-for="(item,index) in commList" :key="index" :text='item' :index='index'></item>
   </div>
   </scroll-view>
 </template>

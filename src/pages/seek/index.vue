@@ -63,27 +63,25 @@
           </div>
           <div v-if="iszhList=='1'" class="zheban"></div>
       </div>
-       <!-- <div v-else class="seetResult" style="padding:0 50px;">
-          <div class="div" v-for="comm in filterList2" :key="comm.id">
-            <p :class="{'result-span':resultType==comm.id}" @click.stop="resultTypes(comm.id)">
-              <span>{{comm.name}}</span>
-              <span v-if="resultType==comm.id" class="icon4"></span> 
-              <span v-else class="icon3"></span>  
-            </p>
+      <div v-if="commList.length>0" style="height:100%;width:100%">
+        <scroll-view  
+        v-if="oncommType==1"
+         scroll-y 
+         @scrolltolower="onload(1)"
+         @productAttentions='productAttentions'
+           class="seekResultBox">
+          <div class="seekResult" >
+              <item v-for="(item,index) in commList" :key="index" :text='item' :index='index'></item>
           </div>
-          <div class="zhList" v-if="iszhList=='1'">
-              <div class="zh-item"
-               v-for="item in zhList"
-               @click="zhitem(item.id)"
-               :key="item.id">
-                  <span :class="{zhColor:zhtype==item.id}">{{item.name}}</span>
-                  <i-icon v-if="zhtype==item.id" type="right" size="18" color="#1DB389"/>
-              </div>
-          </div>
-      </div> -->
-      <seek-result v-if="oncommType==1" :commList='commList' @onload='onload'></seek-result>
-      <seek-firm v-else :commList='commList' :oncommType='oncommType' @onload='onload'></seek-firm>
-      <div class="nocommList" v-if="commList.length<1">没有找到相关数据！</div>
+        </scroll-view>
+          <!-- <seek-result 
+          @productAttentions='productAttentions'
+          v-if="oncommType==1"
+           :commList='commList'
+            @onload='onload'></seek-result> -->
+          <seek-firm v-else :commList='commList' :oncommType='oncommType' @onload='onload'></seek-firm>
+      </div>
+      <div class="nocommList" v-if="commList.length<1">没有找到相关数据</div>
     </div>
     <!-- 品牌右侧弹框 -->
     <i-drawer style="width:100%;height:100%;" mode="right" :visible="showRight1" @close="toggright1s">
@@ -136,8 +134,8 @@
                 <div v-for="(item,index) in filterPrice" :key="index"
                 :class="{priceBox:index!=1,border:index==1}"          
                 >
-                <input v-model="filterInput1" v-if="index==0" type="number" :placeholder='item.name' class="input">
-                <input v-model="filterInput2" v-if="index==2" type="number" :placeholder='item.name' class="input">
+                <input v-model="floorPrice" v-if="index==0" type="number" :placeholder='item.name' class="input">
+                <input v-model="highestPrice" v-if="index==2" type="number" :placeholder='item.name' class="input">
                 </div>
               </div>
           </div>
@@ -173,7 +171,7 @@
 import seekResult from './seekResult'
 import seekFirm from './seekFirm'
 import {pinyin} from '../../utils/pinyin.js'
-import {searchType,addFindAll,sortProduct} from '../../utils/api.js'
+import {searchType,addFindAll,sortProduct,productAttention} from '../../utils/api.js'
 export default {
   data () {
     return {
@@ -259,18 +257,7 @@ export default {
         {id:2,name:'关注排序'},
         {id:3,name:'新品优先'},
       ],
-       commList:[
-         {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-          {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-           {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-            {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-             {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-              {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-               {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-                {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-                 {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-                  {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
-        ],
+       commList:[],
         //热门品牌
         hotbrands:[
           {id:1,name:'牛栏山'},
@@ -284,9 +271,17 @@ export default {
         filterInput1:'',
         filterInput2:'',
         dataType:'1',//下拉加载类型
-        total:0,//总条数
+        total:1,//总条数
         pageNum:1,
-        pageSize:10
+        pageSize:10,
+        data:null, //建材参数
+        attentionCount:'',
+        floorPrice:null,
+        highestPrice:null,
+        keyword:'',
+        newProduct:'',
+        up:'',
+        brand:''
     }
     
   },
@@ -296,32 +291,42 @@ export default {
       seekFirm
   },
   mounted() {
-    this.input=''
-      this.brandList()    
   },
   onShow(){
-    this.resultType='1'
-    this.zhtype='1'
+   
+    this.showRight1=false
+    this.showRight2=false
     let materials=wx.getStorageSync('materials')||[[],[],[],[]]
     this.materials=materials
-    addFindAll({type:'品牌'}).then(res=>{
-        console.log('所有品牌',res)
-        if(res.code==200&&res.data!=null){
-          this.cities=res.data
-        }
-      })
     console.log(materials)
   },
   onLoad(){
+     this.resultType='1'
+      this.zhtype='1'
+      this.commList=[]
+      this.pageNum=1  
+      this.attentionCount=''
+      this.newProduct=''
+      this.floorPrice=null
+      this.highestPrice=null
+      this.up=''
+      this.input=''
+      this.brand=''
       this.isresult=true
       let data=this.$root.$mp.query
       if(data.key==1){
         this.oncommType=Number(data.type)+1
         this.isresult=false
         this.dataType=6
+        this.data=data
         this.sortProducts(data)
       }
-
+       addFindAll({type:'品牌'}).then(res=>{
+        console.log('所有品牌',res)
+        if(res.code==200&&res.data!=null){
+          this.cities=res.data
+        }
+      })
       console.log('query',data)
   },
   onReachBottom(){
@@ -332,6 +337,13 @@ export default {
     // 隐藏加载框
         // wx.hideLoading();
   },
+  watch: {
+    dataType(){
+      console.log('dataType',this.dataType)
+      this.commList=[]
+      this.pageNum=1
+    }
+  },
   methods: {
     //点击取消返回首页
     oncall(){
@@ -339,38 +351,53 @@ export default {
         url: '/pages/index/main'
       })
     },
-    //加载下一页数据
+    //加载下一页数据seeks
     onload(id){
       console.log('加载下一页',id)
-      let page=Math.ceil(this.total/20)
-      console.log(page)
-      if(this.dataType=='1'&&page>0){
-        if(this.pageNum>=page){
-            return
-        }
-        this.pageNum=this.pageNum+1
-        searchType({pageNum:this.pageNum,pageSize:this.pageSize,type:this.oncommType-1,keyword:this.input}).then(res=>{
-          console.log('主页搜索商品2',res)
-          if(res.code==200&&res.data!=null){
-              this.commList=this.commList.concat(res.data.list)       
-          }
-        })
+      let page=Math.ceil(this.total/10)
+      console.log(page)      
+      if(this.dataType=='6'&&this.pageNum<=page){
+        this.sortProducts(this.data)
+      }
+      else if(this.dataType=='4'&&this.pageNum<=page){
+        console.log('品牌')
+      }
+      else if(this.dataType=='7'&&this.pageNum<=page){
+        this.productFliter2()
+      }
+      else if(this.pageNum<=page){      
+        this.productFliter()
       }
      
     },
-    //建材商品搜索列表
-    sortProducts(item){
-        this.pageNum=1  
-        sortProduct({
-          pageNum:this.pageNum,
-          pageSize:this.pageSize,
-          name:item.name,
-        }).then(res=>{
-          console.log('建材搜索商品',res)
-          if(res.code==200&&res.data!=null){
-              this.commList=res.data  
-          }
-        })
+    //关注商品、取消
+    productAttentions(text,index){
+      console.log(text,index)
+      productAttention({
+        flag:text.isAttention==1?1:0,
+        id:text.id,
+        openId :this.openId 
+      }).then(res=>{
+        console.log('关注、取消商品',res)
+        if(res.code==200&&res.msg=='成功'){
+            this.commList[index].isAttention=text.isAttention==1?0:1
+            if(text.isAttention==0){
+                wx.showToast({
+                title: '取消关注',
+                icon: 'success',
+                duration: 2000
+              })
+            }else{
+                  wx.showToast({
+                title: '关注成功',
+                icon: 'success',
+                duration: 2000
+              })
+            }
+            
+         
+        }
+      })
     },
     //显示隐藏品牌右边的弹框
     toggright1s(){
@@ -386,33 +413,39 @@ export default {
       this.toView=id
       console.log(id)
     },
-    //点击热门品牌
-    onpinpai(item){
-      console.log(item.name)
-        this.pageNum=1
-        this.dataType=4
-      this.toggright1s()
-      searchType({pageNum:this.pageNum,
-      pageSize:this.pageSize,
-      type:this.oncommType-1,
-      brand:item.name,
+    //搜索商品筛选
+    productFliter(){
+      searchType({
+        pageNum:this.pageNum,
+        pageSize:this.pageSize,
+        type:this.oncommType-1,
+        keyword:this.input,
+        attentionCount:this.attentionCount,
+        floorPrice:this.floorPrice,
+        highestPrice:this.highestPrice,
+        newProduct:this.newProduct,
+        up:this.up
       }).then(res=>{
-        console.log('热门品牌商品',res)
+        console.log('主页搜索商品',res)
         if(res.code==200&&res.data!=null){
-            this.commList=res.data.list
-            this.total=res.data.total
+            this.commList=this.commList.concat(res.data.list) 
+             this.total=res.data.total
+             this.pageNum=this.pageNum+1
         }
       })
     },
-    //选择价格
-    cutPrice(item){
-        this.price2.id=item.id
-         this.price2.name=item.name
+    //点击热门品牌
+    onpinpai(item){
+      console.log(item.name)
+      this.dataType=4
+      this.showRight1=false
+      
     },
     //选择环保
     cutHuanbao(item){
         this.talls2.id=item.id
         this.talls2.name=item.name
+        this.up=item.name
     },
     //选择热点
     cutHots(item,index){
@@ -422,24 +455,10 @@ export default {
     //筛选确认
     chooseClick(){
       console.log('筛选')
-      this.pageNum=1
       this.dataType=5
       console.log(this.filterInput1,this.filterInput2)
       this.showRight2=false
-      searchType({
-        pageNum:this.pageNum,
-        pageSize:this.pageSize,
-        type:this.oncommType-1,
-        floorPrice:this.filterInput1,
-        highestPrice:this.filterInput2,
-        up:this.talls2.name
-        }).then(res=>{
-        console.log('主页搜索筛选商品',res)
-        if(res.code==200&&res.data!=null){
-            this.commList=res.data.list
-             this.total=res.data.total
-        }
-      })
+      this.productFliter()
     },
 
 
@@ -459,26 +478,33 @@ export default {
        wx.removeStorageSync('materials')
       this.materials=[[],[],[],[]]     
     },
+      //搜索商品筛选
+    productFliter2(){
+      searchType({
+        pageNum:this.pageNum,
+        pageSize:this.pageSize,
+        type:this.oncommType-1,
+        keyword:this.input,     
+      }).then(res=>{
+        console.log('主页搜索商品2',res)
+        if(res.code==200&&res.data!=null){
+            this.commList=this.commList.concat(res.data.list) 
+             this.total=res.data.total
+             this.pageNum=this.pageNum+1
+        }
+      })
+    },
     //确认搜索design
     seeks(){
       console.log('搜索',this.input)  
-      // if(this.input==''){
-      //   wx.showToast({
-      //     title: '搜索内容不能为空！',
-      //     icon: 'none',
-      //     duration:1500
-      //   })
-      //   return
-      // }
-      this.dataType=1
-      this.zhtype=1
-      searchType({pageNum:this.pageNum,pageSize:this.pageSize,type:this.oncommType-1,keyword:this.input}).then(res=>{
-        console.log('主页搜索商品',res)
-        if(res.code==200&&res.data!=null){
-            this.commList=res.data.list
-             this.total=res.data.total
-        }
-      })
+      this.commList=[]
+      if(this.oncommType==1){
+        this.dataType=1
+        this.productFliter()          
+      }else{
+        this.dataType=7
+        this.productFliter2()    
+      }
         this.isresult=false
         if(this.oncommType=='1'&&this.input!=''){
           let index=this.materials[0].indexOf(this.input)
@@ -537,52 +563,51 @@ export default {
           this.iszhList=id
           if(id==2){
             this.toggright1s();
+            this.brandList()    
           }
           else if(id==3){
               this.toggright1s2();
           }
     },
+    //关注排序
+    searchType2(){
+        
+    },
+    //新品排序
+    searchType3(){
+        searchType({
+            pageNum:this.pageNum,
+            pageSize:this.pageSize,
+            type:this.oncommType-1,
+            newProduct:'0',
+            }).then(res=>{
+          console.log('新品排序',res)
+          if(res.code==200&&res.data!=null){
+             this.commList=this.commList.concat(res.data.list)
+                this.total=res.data.total
+                this.pageNum=this.pageNum+1
+          }
+        })
+    },
     //点击综合里面的item
     zhitem(id){
         this.zhtype=id
-        this.pageNum=1
         this.dataType=id
         if(id==1){
-          searchType({pageNum:this.pageNum,pageSize:this.pageSize,type:this.oncommType-1,keyword:this.input}).then(res=>{
-            console.log('搜索综合商品',res)
-            if(res.code==200&&res.data!=null){
-                this.commList=res.data.list
-                 this.total=res.data.total
-            }
-          })
+          this.attentionCount=''
+          this.newProduct=''
+          this.floorPrice=null
+          this.highestPrice=null
+          this.up=''
+          this.productFliter()
         }
         else if(id==2){
-           searchType({
-             pageNum:this.pageNum,
-             pageSize:this.pageSize,
-             type:this.oncommType-1,
-             attentionCount:'0',
-            }).then(res=>{
-            console.log('新品排序',res)
-            if(res.code==200&&res.data!=null){
-                this.commList=res.data.list
-                 this.total=res.data.total
-            }
-          })
+          this.attentionCount='0'
+          this.productFliter()
         }
          else if(id==3){
-           searchType({
-             pageNum:this.pageNum,
-             pageSize:this.pageSize,
-             type:this.oncommType-1,
-             newProduct:'0',
-             }).then(res=>{
-            console.log('新品排序',res)
-            if(res.code==200&&res.data!=null){
-                this.commList=res.data.list
-                 this.total=res.data.total
-            }
-          })
+           this.newProduct='0'
+           this.productFliter()
         }
     },
     //点击历史记录
@@ -614,6 +639,9 @@ export default {
         this.cities.forEach((item)=>{
           let firstName=null   
             console.log(item.brandName)
+            if(item.brandName==null){
+              return          
+            }
           if(name.test(item.brandName.slice(0,1))){
              firstName = pinyin.getCamelChars(item.brandName).substring(0,1); 
                 let index = words.indexOf( firstName );

@@ -9,7 +9,7 @@
               <img class="item-icon" src="/static/Icon/user.jpg" alt="">
                 <span>{{text.name}}</span>
             </div>
-            <div>
+            <div @click.stop="$emit('productAttentions',text,index)">
                <img v-if="text.isAttention==0" class="item-icon" src="/static/Icon/att1.png" alt="">
                <img v-else class="item-icon" src="/static/Icon/att2.png" alt="">
               <span>{{text.attentionCount}}</span>
@@ -21,7 +21,7 @@
 <script>
 
 export default {
-      props: ['text'],
+      props: ['text','index'],
       data () {
         return {
           name:'sdsd'

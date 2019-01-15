@@ -27,6 +27,7 @@ export default {
       list:[
         {id:1,name:'申请成为入驻商',imgUrl:'/static/Icon/shang.png'},
         {id:2,name:'我的关注',imgUrl:'/static/Icon/my2.png'},
+        {id:3,name:'我的拼团',imgUrl:'/static/Icon/spell1.png'},
       ]
     }
   },
@@ -58,6 +59,11 @@ export default {
       else if(id==2){
           wx.navigateTo({
           url: '../Myattention/main'
+        })
+      }
+       else if(id==3){
+          wx.navigateTo({
+          url: '../Myspell/main'
         })
       }
     }

@@ -11,7 +11,7 @@
                       <img src="/static/Icon/user.jpg" alt="">
                       <span>{{item.name}}</span>
                   </div>
-                  <div @click="PhoneCall(item.amount)">
+                  <div @click.stop="PhoneCall(item.amount)">
                     <img src="/static/Icon/phone2.png" alt="">
                       <span class="phone">{{item.amount}}</span>
                     </div>

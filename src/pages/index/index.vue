@@ -29,8 +29,10 @@
     </div>
    <div class="commList">
         <item 
-        v-for="item in commList"
-        :key="item.id"
+        v-for="(item,index) in commList"
+        :key="index"
+        @productAttentions='productAttentions'
+        :index='index'
         :text="item"></item>
     </div>
   </div>
@@ -41,7 +43,8 @@ import qs from 'qs'
 import {
   userInfo,
   commodityList,
-  indexBanner
+  indexBanner,
+  productAttention
   } from '../../utils/api.js'
 import item from '@/components/item'
 import card from '@/components/card'
@@ -69,14 +72,16 @@ export default {
         {id:10,name:'选项1'},
       ],
       commList:[
-        {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
+        // {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
         ],
       value:'',
       current: '1',
       current_scroll: '0',
       pageNum:1,
       pageSize:10,
-      name:''
+      name:'',
+      openId:'',
+      total:2,
     }
   },
 
@@ -108,9 +113,40 @@ export default {
         }).then(res=>{
           console.log('商品列表',res)   
               if(res.code==200&&res.data!=null){
-                this.commList=res.data.list              
+                this.commList=this.commList.concat(res.data.list)  
+                 this.total=res.data.total
+                 this.pageNum=this.pageNum+1
               }
         })
+    },
+    //关注商品、取消
+    productAttentions(text,index){
+      console.log(text,index)
+      productAttention({
+        flag:text.isAttention==1?1:0,
+        id:text.id,
+        openId :this.openId 
+      }).then(res=>{
+        console.log('关注、取消商品',res)
+        if(res.code==200&&res.msg=='成功'){
+            this.commList[index].isAttention=text.isAttention==1?0:1
+            if(text.isAttention==0){
+                wx.showToast({
+                title: '取消关注',
+                icon: 'success',
+                duration: 2000
+              })
+            }else{
+                  wx.showToast({
+                title: '关注成功',
+                icon: 'success',
+                duration: 2000
+              })
+            }
+            
+         
+        }
+      })
     },
     //获取用户id
      getUserInfos () {
@@ -128,6 +164,7 @@ export default {
                 console.log('用户id',res)
                 if(res.code==200&&res.data!=null){
                   wx.setStorageSync('openId',res.data.openId)
+                  this.openId=res.data.openId
                 }
               })
             }
@@ -167,12 +204,14 @@ export default {
         wx.stopPullDownRefresh();
   },
   onReachBottom(){
-    console.log('上拉')
-    //  wx.showLoading({
-    //   title: '玩命加载中',
-    // })
-    // 隐藏加载框
-        wx.hideLoading();
+    let page=Math.ceil(this.total/10)
+    console.log('上拉',page)
+    if(this.pageNum>page){
+      console.log('没有数据了')
+      return
+    }else{
+        this.indexList()        
+    }
   },
  
 }

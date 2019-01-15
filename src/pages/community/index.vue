@@ -12,7 +12,7 @@
               <div v-if="types==index" class="border"></div>
           </div>       
       </div>
-      <scroll-view v-if="types==0" scroll-y class="community-forum">
+      <scroll-view @scrolltolower='loadforum' v-if="types==0" scroll-y class="community-forum">
           <forum v-for="(item,index) in forumList" :key="index" :forumList='item' :index='index'></forum>
       </scroll-view>
       <div v-else class="community-house">
@@ -55,37 +55,32 @@
               </div>
             </div>
           </div>
-          <scroll-view scroll-y class="forum-item">
+          <scroll-view v-if="total!=0" @scrolltolower='loadhouse' scroll-y class="forum-item">
             <house v-for="(item,index) in houseList" 
             :key="index" 
             :houseList='item'
              :index='index'></house>
              <div v-if="isFilter1!=''" class="zheban"></div>
           </scroll-view>
+          <div v-else class="onlist">没有找到相关数据</div>
       </div>
   </div>
 </template>
 
 <script>
-
+import {articleList,houseList} from '../../utils/api.js'
 import forum  from './forum '
 import house  from './house'
 export default {
   data () {
     return {
       forumList:[
-        {id:1,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:2,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:3,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:4,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:5,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+        // {id:1,title:'官方发布',content:'城市大部分普通小区中顶层复式有什么弊端？',readCount:'1458'},
+        // {id:2,title:'官方发布',content:'城市大部分普通小区中顶层复式有什么弊端？',readCount:'1458'},
       ],
        houseList:[
-        {id:1,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:2,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:3,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:4,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
-        {id:5,name:'官方发布',text:'城市大部分普通小区中顶层复式有什么弊端？',amount:'1458'},
+        // {id:1,title:'官方发布',content:'城市大部分普通小区中顶层复式有什么弊端？',readCount:'1458'},
+        // {id:2,title:'官方发布',content:'城市大部分普通小区中顶层复式有什么弊端？',readCount:'1458'},      
       ],
       types:0,
       input:'',
@@ -98,20 +93,29 @@ export default {
         {id:2,name:'筛选'},
       ],
       Filter1:[
-        {id:1,name:'从低到高'},
-        {id:2,name:'从高到底'},
+        {id:0,name:'从低到高'},
+        {id:1,name:'从高到底'},
       ],
       Filter2:[
-        {id:1,name:'20000元/平 以上',low:20000},
-        {id:2,name:'15000-20000元/平',low:15000,tall:20000},
-        {id:3,name:'10000-15000元/平',low:10000,tall:15000},
-        {id:4,name:'10000元/平 以下',low:10000},
+        {id:0,name:'20000元/平 以上',up:20000},
+        {id:1,name:'15000-20000元/平',floorPrice:15000,highestPrice:20000},
+        {id:2,name:'10000-15000元/平',floorPrice:10000,highestPrice:15000},
+        {id:3,name:'10000元/平 以下',down:10000},
       ],
-      resultType:'',
+      resultType:null,
       isFilter1:'',
       // isFilter2:'',
-      isFilter1Type:'1',
-      isFilter2Type:'1'
+      isFilter1Type:null,
+      isFilter2Type:null,
+      pageNum:1,
+      pageNum2:1,
+      pageSize :10,
+      total:1,
+      houseData:1, //房价当前访问的接口
+      down:'',
+      floorPrice:'',
+      highestPrice:'',
+      up:''
     }
   },
 
@@ -119,14 +123,114 @@ export default {
     forum,
     house
   },
+  onLoad(){
+    //文章列表
+   this.articleLists()
+  },
   // onShow(){
   //   this.input=''
   //   this.types=0
   //   this.resultType=1
   // },
+  watch: {
+    types(){
+      this.pageNum=1
+      this.houseData=1
+      this.forumList=[]
+      this.houseList=[]
+    },
+    houseData(){
+      this.houseList=[]
+      this.pageNum=1
+    }
+
+  },
   methods: {
     ontype(index){
       this.types=index
+      if(index==0){
+          this.articleLists()
+      }else{
+          this.floorPrice=''
+          this.floorPrice=''
+          this.down=''
+          this.up=''
+          this.input=''  
+          this.isFilter1Type=null,
+          this.isFilter2Type=null,  
+           this.resultType=null,   
+          this.fliterPrice()
+      }
+    },
+    //加载文章列表
+    articleLists(){
+       articleList({
+        pageNum:this.pageNum,
+        pageSize:this.pageSize
+      }).then(res=>{
+        console.log('文章列表',res)
+        if(res.code==200&&res.data!=null){
+          this.forumList=this.forumList.concat(res.data.list)
+          this.pageNum=this.pageNum+1
+          this.total=res.data.total
+        }
+      })  
+    },
+    //加载房价列表
+    houseLists(){
+      houseList({
+        pageNum:this.pageNum,
+        pageSize:this.pageSize,
+        name:this.input,
+      }).then(res=>{
+        console.log('房价列表',res)
+        if(res.code==200&&res.data!=null){
+            this.houseList=this.houseList.concat(res.data.list)
+            this.pageNum=this.pageNum+1
+            this.total=res.data.total
+            this.houseData=1
+        }
+      })
+    },
+    //筛选小区
+    fliterPrice(){
+        houseList({
+        pageNum:this.pageNum,
+        pageSize:this.pageSize,
+        price:this.isFilter1Type,
+        down:this.down,
+        floorPrice:this.floorPrice,
+        highestPrice:this.highestPrice,
+        name:this.input,
+        up:this.up
+      }).then(res=>{
+        console.log('房价列表',res)
+        if(res.code==200&&res.data!=null){
+            this.houseList=this.houseList.concat(res.data.list)
+            this.pageNum=this.pageNum+1
+            this.total=res.data.total
+            
+        }
+      })
+    },
+    //加载文章分页
+    loadforum(){
+      let page=Math.ceil(this.total/10)
+      if(this.pageNum<=page){
+        this.articleLists()
+      }else{
+        console.log('没数据了')
+      }
+    },
+    //加载房价分页
+    loadhouse(){
+       let page=Math.ceil(this.total/10)
+       if(this.pageNum<=page){
+             this.fliterPrice()
+       }
+      else{
+        console.log('没数据了')
+      }
     },
     //input里面键盘按下事件
     keyCode(e){
@@ -136,6 +240,9 @@ export default {
     //确定搜素
     seeks(){
         console.log('搜索')
+        this.houseList=[]
+        this.fliterPrice()
+        this.houseData=0
     },
     //房价筛选
     resultTypes(id){
@@ -146,10 +253,49 @@ export default {
     filteritem(id){
         this.isFilter1Type=id
         this.isFilter1=''
+        if(id==0){
+          this.houseData=2
+            this.fliterPrice()
+        }else{
+            this.houseData=3
+            this.fliterPrice()
+        }
     },
     filteritem2(id){
         this.isFilter2Type=id
         this.isFilter1=''
+        if(id==0){
+           this.houseData=4
+           this.up=this.Filter2[id].up
+            this.floorPrice=''
+             this.floorPrice=''
+              this.down=''
+            this.fliterPrice()
+        }
+        else if(id==1){
+           this.houseData=5
+            this.floorPrice=this.Filter2[id].floorPrice
+             this.highestPrice=this.Filter2[id].highestPrice
+             this.down=''
+              this.up=''
+              this.fliterPrice()
+        }
+         else if(id==2){
+            this.houseData=6
+            this.floorPrice=this.Filter2[id].floorPrice
+             this.highestPrice=this.Filter2[id].highestPrice
+              this.down=''
+              this.up=''
+              this.fliterPrice()
+        }
+          if(id==3){
+             this.houseData=7
+           this.down=this.Filter2[id].down
+           this.floorPrice=''
+             this.floorPrice=''
+              this.up=''
+            this.fliterPrice()
+        }
     },
     //隐藏筛选框
     hideFilter(){
@@ -309,6 +455,13 @@ export default {
           }
         }
     }
-    
+    .onlist{
+      width: 100%;
+      height: 200px;
+      line-height: 200px;
+      text-align: center;
+      font-size: 16px;
+      color: #999999;    
+    }
 }
 </style>

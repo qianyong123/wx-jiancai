@@ -1,20 +1,21 @@
 <template>
   <div class="forum" @click="forumItem(forumList.id)">
       <div class="forum-left">
-          <div class="title">{{forumList.text}}</div>
+          <div class="title">{{forumList.content}}</div>
           <div class="name">
-              <div>{{forumList.name}}</div>
-              <div>{{forumList.amount}}阅读</div>
+              <div>{{forumList.title}}</div>
+              <div>{{forumList.readCount}}阅读</div>
           </div>
           <div v-if="index<9" class="tabs">0{{index+1}}</div>
           <div v-else class="tabs">{{index+1}}</div>
       </div>
-      <div class="forum-img"></div>
+      <div class="forum-img">
+          <!-- <img :src="forumList.imgUrl" alt=""> -->
+      </div>
   </div>
 </template>
 
 <script>
-
 
 export default {
     props:['forumList','index'],
