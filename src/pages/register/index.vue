@@ -2,9 +2,9 @@
   <div class="register" >
        <div class="bcg"></div>
        <div class="text">
-         <div>楼盘名称</div>
+         <div>入驻类型</div>
          <div>
-           <input v-model="input1" placeholder="楼盘名称" focus />
+           <input v-model="input1" placeholder="入驻类型" focus />
          </div>
        </div>
        <div class="text">
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-
+import {applyEnter} from '../../utils/api.js'
 export default {
   data () {
     return {
@@ -96,16 +96,30 @@ export default {
       })
      }
      else{
-       wx.showToast({
-        title: '申请成功',
-        icon: 'success',
-        duration: 1500
-      })
-      setTimeout(()=>{
-        wx.switchTab({
-          url: '/pages/my/main'
-        })
-      },1500)
+       applyEnter({
+         companyAddress:this.input3,
+         companyLandline:this.input6,
+         companyName:this.input2,
+         contact:this.input4,
+         contactPhone:this.input5,
+         type:this.input1
+       }).then(res=>{
+         console.log('申请成功',res)
+         if(res.code==200&&res.msg=='成功'){
+              wx.showToast({
+                title: '申请成功',
+                icon: 'success',
+                duration: 1500
+              })
+              // setTimeout(()=>{
+              //   wx.switchTab({
+              //     url: '/pages/my/main'
+              //   })
+              // },1500)
+         }
+          
+       })
+      
       
      }
      

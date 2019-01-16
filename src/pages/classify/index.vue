@@ -21,6 +21,7 @@
           <scroll-view 
           scroll-y
           class="classiify-main"
+          @scrolltolower='onloadPageList'
           >
            <div v-if="type==0" class="classiify-item">
               <div 
@@ -48,14 +49,14 @@ export default {
   data () {
     return {
         classiifyList:[
-          {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'首付撒'},
-          {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
-          {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
-          {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
-          {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
-          {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
-          {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
-          {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
+          // {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'首付撒'},
+          // {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
+          // {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
+          // {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
+          // {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
+          // {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
+          // {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
+          // {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
         ],
         classiifyType:[
           {id:1,name:'建材馆'},
@@ -63,14 +64,28 @@ export default {
           {id:3,name:'服务馆'},
           {id:4,name:'经销商馆'},
         ],
-        type:'0'
+        type:'0',
+        pageNum:1,
+        pageSize:10,
+        total:1
     }
   },
 
   components: {
     seekFirm
   },
-
+  watch: {
+    type(){
+      this.classiifyList=[]
+      this.pageNum=1
+      console.log('type',this.type)
+    }
+  },
+  onLoad(){
+    
+    this.classSorts()
+    console.log('加载分页')
+  },
   methods: {
    seekInput(){
      wx.navigateTo({
@@ -88,14 +103,26 @@ export default {
         url:`../seek/main?name=${item.name}&type=${this.type}&key=${1}`
       })
    },
+   //加载分页数据
+   onloadPageList(){
+      console.log('加载分页')
+      let page=Math.ceil(this.total/10)
+      if(this.pageNum<=page){
+        this.classSorts()
+      }
+   },
    //分类列表
    classSorts(){
      classSort({
-        type:this.type
+        type:this.type,
+        pageNum :this.pageNum,
+        pageSize:this.pageSize
       }).then(res=>{
         console.log('建材馆列表',res)
         if(res.code==200&&res.data!=null){
-            this.classiifyList=res.data
+            this.classiifyList=res.data.list
+            this.total=res.data.total
+            this.pageNum=this.pageNum+1
         }
       })
    }
@@ -106,10 +133,7 @@ export default {
   created () {
 
   },
-  onLoad(){
-    console.log('分类2')
-    this.classSorts()
-  }
+  
 }
 </script>
 

@@ -53,12 +53,25 @@ export default {
 @import '../style/base.scss';
     .index-item{
       width: 174px;
-      min-height: 255px;
+      min-height:200px;
       background: #fff;
       margin-bottom: 10px;
       font-size: 12px;
       .item-img{
         height: 174px;
+        width: 174px;
+        background: #ccc;
+        position: relative;
+        img{
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      }
+       .item-img2{
+        height:220px;
         width: 174px;
         background: #ccc;
         position: relative;

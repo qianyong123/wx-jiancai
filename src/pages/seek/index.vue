@@ -68,10 +68,14 @@
         v-if="oncommType==1"
          scroll-y 
          @scrolltolower="onload(1)"
-         @productAttentions='productAttentions'
-           class="seekResultBox">
-          <div class="seekResult" >
-              <item v-for="(item,index) in commList" :key="index" :text='item' :index='index'></item>
+          class="seekResultBox">
+          <div class="seekResult">
+              <item 
+              v-for="(item2,index2) in commList" 
+              :key="index2" 
+              :text='item2'
+              @productAttentions='productAttentions'
+               :index='index2'></item>
           </div>
         </scroll-view>
           <!-- <seek-result 
@@ -170,6 +174,7 @@
 <script>
 import seekResult from './seekResult'
 import seekFirm from './seekFirm'
+import item from './item'
 import {pinyin} from '../../utils/pinyin.js'
 import {searchType,addFindAll,sortProduct,productAttention} from '../../utils/api.js'
 export default {
@@ -257,7 +262,9 @@ export default {
         {id:2,name:'关注排序'},
         {id:3,name:'新品优先'},
       ],
-       commList:[],
+       commList:[
+         
+       ],
         //热门品牌
         hotbrands:[
           {id:1,name:'牛栏山'},
@@ -274,6 +281,7 @@ export default {
         total:1,//总条数
         pageNum:1,
         pageSize:10,
+        openId:'',
         data:null, //建材参数
         attentionCount:'',
         floorPrice:null,
@@ -288,7 +296,8 @@ export default {
 
   components: {
       seekResult,
-      seekFirm
+      seekFirm,
+      item
   },
   mounted() {
   },
@@ -301,6 +310,10 @@ export default {
     console.log(materials)
   },
   onLoad(){
+    let openId=wx.getStorageSync('openId')
+    if(openId){
+      this.openId=openId
+    }
      this.resultType='1'
       this.zhtype='1'
       this.commList=[]
@@ -353,7 +366,7 @@ export default {
     },
     //加载下一页数据seeks
     onload(id){
-      console.log('加载下一页',id)
+      console.log('加载下一页')
       let page=Math.ceil(this.total/10)
       console.log(page)      
       if(this.dataType=='6'&&this.pageNum<=page){
@@ -413,6 +426,21 @@ export default {
       this.toView=id
       console.log(id)
     },
+    //分类页面商品列表
+    sortProducts(data){
+      sortProduct({
+        name:data.name,
+        pageNum:this.pageNum,
+        pageSize:this.pageSize
+      }).then(res=>{
+        console.log('分类商品列表',res)
+        if(res.code==200&&res.data!=null){
+            this.commList=this.commList.concat(res.data.list) 
+             this.total=res.data.total
+             this.pageNum=this.pageNum+1          
+        }
+      })
+    },
     //搜索商品筛选
     productFliter(){
       searchType({
@@ -430,7 +458,7 @@ export default {
         if(res.code==200&&res.data!=null){
             this.commList=this.commList.concat(res.data.list) 
              this.total=res.data.total
-             this.pageNum=this.pageNum+1
+             this.pageNum=this.pageNum+1     
         }
       })
     },

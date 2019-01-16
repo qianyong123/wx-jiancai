@@ -1,6 +1,8 @@
 <template>
   <div class="house" @click="houseDetail(houseList.id)">
-        <div class="img"></div>
+        <div class="img">
+            <img :src="houseList.imgUrl" alt="">
+        </div>
         <div class="site">
             <div>
                 <span class="xiaoqu-name">{{houseList.name}}</span>

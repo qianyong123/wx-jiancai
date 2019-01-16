@@ -1,35 +1,36 @@
 <template>
   <div class="PlotDetails" >
       <div class="PlotDetails-top">
-          <span>东九一号</span>
-          <span>在售</span>
-          <span>住宅</span>
+          <span>{{data.name}}</span>
+          <span v-if="data.status==0">在售</span>
+          <span v-else>未售</span>
+          <!-- <span>{{data.type}}</span> -->
       </div>
       <div class="PlotDetails-banner">
-        <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+        <img :src="data.imgUrl" alt="">
       </div>
       <div class="detail1">
           <div>
             <span>均价</span>
-            <span>12500元/平</span>
+            <span>{{data.price}}元/平</span>
           </div>
            <div>
             <span>建筑面积</span>
-            <span>90-150㎡</span>
+            <span>{{data.area}}㎡</span>
           </div>
            <div>
             <span>建筑类型</span>
-            <span>板楼</span>
+            <span>{{data.type}}</span>
           </div>
       </div>
       <div class="detail2">
         <div>
           <span>开盘时间：</span>
-          <span>2018-09-25</span>
+          <span>{{data.date}}</span>
         </div>
         <div>
           <span>楼盘地址：</span>
-          <span>宜兴市东氿大道562号</span>
+          <span>{{data.address}}</span>
         </div>
         <div @click="more(1)">更多楼盘信息</div>
       </div>
@@ -59,12 +60,15 @@
 </template>
 
 <script>
+import store from '../counter/store.js'
+import {houseDtail} from '../../utils/api.js'
 import maps from './map'
 export default {
   data () {
     return {
       name: '东九一号',
-      key:2
+      key:2,
+      data:{}
     }
   },
 
@@ -83,7 +87,17 @@ export default {
     
   },
   onLoad(){
-    
+      let data=this.$root.$mp.query
+    if(data.id){
+      houseDtail({id:data.id}).then(res=>{
+        console.log('楼盘详情',res)
+        if(res.code==200&&res.data!=null){
+            this.data=res.data
+            store.commit('moreMessge',res.data)
+        }
+      })
+    }
+    console.log(data)
   }
 }
 </script>
@@ -112,13 +126,13 @@ export default {
             border-radius: 2px;
             margin:0 10px;
         }
-         span:nth-child(3){
-            padding:1px 5px;
-            font-size: 12px;
-            background: #FFF0EB;
-            color: #FF6633;
-            border-radius: 2px;
-        }
+        //  span:nth-child(3){
+        //     padding:1px 5px;
+        //     font-size: 12px;
+        //     background: #FFF0EB;
+        //     color: #FF6633;
+        //     border-radius: 2px;
+        // }
     }
     .PlotDetails-banner{
       width: 100%;
@@ -190,13 +204,13 @@ export default {
       }
       .detail3{
         width:100%;
-        height: 100px;
+        height: 110px;
         display: flex;
         margin-bottom: 20px;
         font-size: 14px;
         .img{
-            width: 100px;;
-            height: 100px;
+            width: 110px;;
+            height: 110px;
             position: relative;
             background: #ccc;
             margin-right: 20px;

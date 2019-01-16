@@ -22,7 +22,7 @@
 </template>
 
 <script>
-
+import {myAttention} from '../../utils/api.js'
 export default {
   data () {
     return {
@@ -61,7 +61,12 @@ export default {
     
   },
   onLoad(){
-    
+   let openId= wx.getStorageSync('openId')
+    myAttention({
+      openId
+    }).then(res=>{
+      console.log('我的关注',res)
+    })
   },
    onReachBottom(){
     console.log('上拉')

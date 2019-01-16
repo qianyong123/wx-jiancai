@@ -1,6 +1,6 @@
 <template>
   <div class="map" >
-      <div class="name">地图</div>
+      <div class="name">{{data.name}}</div>
       <map
         id="map"
         :longitude="markers[0].longitude"
@@ -22,6 +22,7 @@ export default {
       latitude:'',
       longitude:'',
       motto: 'Hello World',
+      data:'',
       userInfo: {},
       markers: [{
         iconPath: '/static/Icon/map.png',
@@ -29,7 +30,7 @@ export default {
         latitude:'30.625480688041968',
         longitude: '104.03000271368147',
         width: 25,
-          height: 25
+        height: 25
     }],
     polyline: [{
       points: [{
@@ -83,6 +84,13 @@ export default {
   onLoad(){
     let data=this.$root.$mp.query
     let that=this
+    if(data.name){
+      this.data=data
+      let gpsrs=data.gps.split(',')
+      this.markers[0].longitude=gpsrs[0]
+      this.markers[0].latitude=gpsrs[1]
+      console.log(gpsrs)
+    }
     console.log(data)
     // wx.getLocation({
     //   type: 'gcj02',

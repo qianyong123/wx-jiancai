@@ -1,36 +1,38 @@
 <template>
   <div class="firmDetail" >
       <div class="banner">
-        <img class="bannerImg" src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+        <img class="bannerImg" :src="data.detail.backgroundImgUrl" alt="">
           <div class="firmDetail-phone">
             <div class="product">
               <div class="product-box">
-                  <div class="logo"></div>
+                  <div class="logo">
+                      <img :src="data.detail.brandLogo" alt="">
+                  </div>
                   <div class="nameBox">
                       <div>
-                          <span class="product-name">奥普吊顶</span>
+                          <span class="product-name">{{data.detail.brandName}}</span>
                           <!-- <span class="merchant">总经销商</span> -->
                       </div>
                       <div>
-                          <span class="product-type">吊顶</span>
-                          <span class="product-type">龙骨</span>
+                          <span v-for="(item,index) in data.label" :key="index" class="product-type">{{item}}</span>
+                          <!-- <span class="product-type">龙骨</span> -->
                       </div>
                   </div>
               </div>   
               <div class="product-details">
                   <img src="/static/Icon/map2.png" alt="">
                   <span class="site">地址：</span>
-                  <span>宜兴市巷头西路298号</span>
-                  <span @click="navMap(longitude,latitude)" class="seekMap">查看地图</span>
+                  <span>{{data.detail.address}}</span>
+                  <span @click="navMap(data.detail.address,data.detail.gps)" class="seekMap">查看地图</span>
               </div>
               <div class="product-details">
                   <img src="/static/Icon/time.png" alt="">
                   <span class="site">营业时间：</span>
-                  <span>09:00-20:00</span>
+                  <span>{{data.detail.startDate}}-{{data.detail.endDate}}</span>
               </div>
               <div class="phone2" @click="PhoneCall">
                   <img src="/static/Icon/phone2.png" alt="">
-                  <span>13562145621</span>
+                  <span>{{data.detail.phone}}</span>
               </div>               
             </div>
           </div>
@@ -38,19 +40,19 @@
       <div v-if="detailType==3" class="hostBox">
           <div class="hostProuct">主营产品</div>
           <div class="hostProuct-box">
-              <div class="hostProuct-item" v-for="(item,index) in ProuctList" :key="index">
+              <div class="hostProuct-item" v-for="(item,index) in data.dealerProductList" :key="index">
                   <div class="item-img">
-                      <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+                      <img :src="item.imgUrl" alt="">
                   </div>
-                  <div>{{item.name}}</div>
+                  <div>{{item.productName}}</div>
               </div>
           </div>
           <div class="brandDetail">品牌介绍</div>
           <div>
             <div class="item-img brandLogo">
-                <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+                <img :src="data.detail.brandLogo" alt="">
             </div>
-            <div class="brand-details">品牌介绍品牌介绍品牌介绍品牌品牌介绍品牌介绍品牌介绍介绍品牌介绍品牌介绍品牌介绍品牌介绍品牌介绍品牌介绍牌</div>
+            <div class="brand-details">{{data.detail.brandDescription}}</div>
           </div>
       </div>
 
@@ -69,6 +71,11 @@
           </div>
           <div class="brandDetail" style="margin-top:10px;">设计团队</div>
           <div style="display: flex;">
+              <div class="userName">
+                  <img class="userImg" src="/static/Icon/user.jpg" alt="">
+                  <div>设计师</div>
+                  <div style="font-size:14px;color:#666681;">5年设计经验</div>
+              </div>
               <div class="userName">
                   <img class="userImg" src="/static/Icon/user.jpg" alt="">
                   <div>设计师</div>
@@ -121,7 +128,7 @@
           <span class="apply" @click="handleClose(1)">免费预约</span>
           <span class="order" @click="handleClose(2)">为我报价</span>
       </div>
-      <i-modal style="80%" :title="modalTiele1" :visible=" visible1 " @ok="handleClose1" @cancel="handleClose1">
+      <i-modal style="80%" :title="modalTiele1" :visible=" visible1 " @ok="handleClose1(1)" @cancel="handleClose1(2)">
         <view class="handleCloses">
             <img src="/static/Icon/phone4.png" alt="">
             <input 
@@ -135,7 +142,13 @@
 </template>
 
 <script>
-import {getData} from '../../utils/api.js'
+import {
+    getData,
+    productDetail,
+    serviceCompanyDetail,
+    designCompanyDetail,
+    dealerDateil
+} from '../../utils/api.js'
 
 export default {
   data () {
@@ -156,13 +169,56 @@ export default {
       ],
       longitude:'113.324520', //经度
       latitude:'23.099994', //经度
+      data:{},
+      typeNmae:'',
+      brandName:''
     }
   },
 
   components: {
     
   },
+  onReady(){
+      
+  },
+ onLoad(){
+    let data=this.$root.$mp.query
+    if(data.type){
+        this.detailType=data.type
+        this.data=data
+        if(data.type==1){
+            this.typeNmae='设计'
+            designCompanyDetail({id:data.id}).then(res=>{
+                console.log('设计公司',res)  
 
+            })
+        }
+        else if(data.type==2){
+            this.typeNmae='服务'
+            serviceCompanyDetail({id:data.id}).then(res=>{
+                console.log('服务公司',res)
+            })
+        }
+        else if(data.type==3){
+            this.typeNmae='经销商'
+            dealerDateil({id:data.id}).then(res=>{
+                console.log('经销商公司',res)
+                if(res.code==200&&res.data!=null){
+                    this.data=res.data
+                    this.brandName=res.data.detail.brandName
+                       wx.setNavigationBarTitle({
+                        title:res.data.detail.brandName,
+                        success: function() {
+                            console.log('setNavigationBarTitle success')
+                        },        
+                        })
+                }
+            })
+        }
+    }
+    
+    console.log(data)
+  },
   methods: {
     handleClose(id){
       this.visible1=true
@@ -172,32 +228,37 @@ export default {
         this.modalTiele1='为你报价'
       }
     },
-    handleClose1(){
+     handleClose1(index){
       this.visible1=false
-      console.log(this.input)
-    },
+       console.log(this.input)
+      if(index==1){
+          productDetail({
+            businessPhone:this.data.detail.phone,
+            name:this.data.name,
+            phone:this.input,
+            type:`${this.typeNmae}-${this.modalTiele1}`
+          }).then(res=>{
+            console.log('登记信息',res)
+          })
+      }
+    },   
     //查看点图
-    navMap(long,lat){
-        console.log(long,lat)
+    navMap(address,gps){
         wx.navigateTo({
-          url:`../map/main?name=${'江阳大道'}&longitude=${this.longitude}&latitude=${this.latitude}`
+          url:`../map/main?name=${address}&gps=${gps}`
       })
     },
     //拨打电话
     PhoneCall(){
       wx.makePhoneCall({
-        phoneNumber: '1340000' // 仅为示例，并非真实的电话号码
+        phoneNumber:this.data.detail.phone // 仅为示例，并非真实的电话号码
       })
     }
   },
   mounted() {
  
   },
-  onShow(){
-    let data=this.$root.$mp.query
-    this.detailType=data.type
-    console.log(data)
-  }
+ 
 }
 </script>
 

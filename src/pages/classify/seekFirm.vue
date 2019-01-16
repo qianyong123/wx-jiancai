@@ -3,7 +3,7 @@
   <div  class="seekFirm-items" v-for="(item, index) in commList" :key="index" @click="fimrDetails(item)">
     <div class="seek-logo">
         <div class="item-img">
-            <img :src="item.imgUrl" alt="">
+            <!-- <img :src="item.imgUrl" alt=""> -->
         </div>
         <div class="item-name">
             <div class="name">
@@ -12,19 +12,19 @@
                 <div class="tabs">保洁</div>
               </div> -->
             </div>
-            <div class="site">{{item.name}}</div>
+            <div class="site">{{item.address}}</div>
         </div>    
     </div>
-    <div class="img2-list">
-        <div class="item-img2">
+    <div class="img2-list" v-if="item.imgList.length>0">
+        <div class="item-img2" v-for="(item2,index2) in item.imgList" :key="index2">
+            <img :src="item2" alt="">
+        </div>
+        <!-- <div class="item-img2">
             <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
         </div>
         <div class="item-img2">
             <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
-        </div>
-        <div class="item-img2">
-            <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
-        </div>
+        </div> -->
     </div>  
   </div>
 </div>
@@ -71,9 +71,9 @@ export default {
     .seekFirm-items{
       padding: 10px;
       width: 100%;
-      height:140px;
+      min-height:50px;
       background: #fff;
-      margin-bottom:10px;
+      margin-bottom:20px;
       font-size: 14px; 
       display: flex;
       flex-direction: column;
@@ -138,9 +138,10 @@ export default {
     }
       .img2-list{
         width: 100%;
-        height: 65px;
+        min-height: 65px;
         display: flex;
         justify-content: space-between;
+        margin-top: 20px;
       }
       .item-img2{
         width: 65px;

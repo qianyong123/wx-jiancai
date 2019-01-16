@@ -4,7 +4,7 @@
         id="map"
         :longitude="markers[0].longitude"
         :latitude="markers[0].latitude"
-        scale="14"
+        scale="16"
         :markers="markers"
         @markertap="markertap"
         show-location
@@ -91,7 +91,6 @@ export default {
         that.markers[0].longitude = res.longitude
         const speed = res.speed
         const accuracy = res.accuracy
-      console.log(that.markers)
       }
     })
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="details" >
       <div class="imgBanner">
-        <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+        <img :src="product.imgUrl" alt="">
           <div class="spell">
               <div class="spellImg">
                   <div>
@@ -13,11 +13,11 @@
           </div>
       </div>
       <div class="state">
-          <div class="state-name">奥普（AUPU）浴霸QDP6626B集成吊顶大功率风暖浴霸 智能触摸开关 8cm薄</div>
-          <div class="attention">
+          <div class="state-name">{{product.description}}</div>
+          <!-- <div class="attention">
               <img src="/static/Icon/myspell1.png" alt="">
               <span>关注</span>
-          </div>
+          </div> -->
           <!-- <div class="attention">
               <img src="/static/Icon/myspell2.png" alt="">
               <span>已关注</span>
@@ -27,15 +27,15 @@
       <div class="pinpai">
           <div class="pinpai-box"> 
               <span class="title">品牌</span>
-              <span>奥普</span>
+              <span>{{product.brand}}</span>
           </div>
           <div class="pinpai-box"> 
               <span class="title">环保指数</span>
-              <span>高</span>
+              <span>{{product.up}}</span>
           </div>
           <div class="pinpai-box">  
               <span class="title">重量</span>
-              <span>2.5kg</span>
+              <span>{{product.weight}}</span>
           </div>
       </div>
       <div class="bcg"></div>
@@ -44,7 +44,7 @@
             <div class="logo"></div>
             <div class="nameBox">
                 <div>
-                    <span class="product-name">奥普吊顶</span>
+                    <span class="product-name">{{product.brand}}</span>
                     <span class="merchant">总经销商</span>
                 </div>
                 <div>
@@ -56,18 +56,18 @@
         <div class="product-details">
             <img src="/static/Icon/map2.png" alt="">
             <span class="site">地址：</span>
-            <span>宜兴市巷头西路298号</span>
+            <span>{{product.brand}}</span>
             <span @click="navMap(longitude,latitude)" class="seekMap">查看地图</span>
         </div>
         <div class="product-details">
             <img src="/static/Icon/time.png" alt="">
             <span class="site">营业时间：</span>
-            <span>09:00-20:00</span>
+            <span>{{product.brand}}</span>
         </div>
         <div class="product-details">
             <img src="/static/Icon/phone.png" alt="">
             <span class="site">商家电话：</span>
-            <span>13612345678</span>
+            <span>{{product.brand}}</span>
         </div>     
       </div>
       <div class="oncePsellBox">
@@ -101,6 +101,7 @@ export default {
       modalTiele1:'',
       longitude:'1562', //经度
       latitude:'56461', //经度
+      product:{}//商品详情
     }
   },
 
@@ -126,11 +127,23 @@ export default {
       if(index==1){
           productDetail({
             businessPhone:'1365555555',
-            name:'奥普',
+            name:this.data.name,
             phone:this.input,
             type:'建材-'+`${this.modalTiele1}`
           }).then(res=>{
             console.log('登记信息',res)
+            if(res.code==200&&res.msg=='成功'){
+                  wx.showToast({
+                  title: '成功',
+                  icon: 'success',
+                  duration: 1500
+                })
+            }else{
+                  wx.showToast({
+                  title:res.msg,      
+                  duration: 1500
+                })
+            }
           })
       }
     },
@@ -145,12 +158,22 @@ export default {
   mounted() {
  
   },
+  onLoad(){
+       let data=this.$root.$mp.query
+      this.data=data
+      console.log(data)
+      if(data.id){
+          getData(`/product/detail/${data.id}`).then(res=>{
+          console.log('商品详情',res)
+          if(res.code==200&&res.data!=null){
+                this.product=res.data.product
+          }
+        })
+      }
+  },
   onShow(){
-    let data=this.$root.$mp.query
-    console.log(data)
-      // getData(`/product/detail/${data.id}`).then(res=>{
-      //   console.log('商品详情',res)
-      // })
+   
+      
   }
 }
 </script>

@@ -10,7 +10,7 @@
           <div v-else class="tabs">{{index+1}}</div>
       </div>
       <div class="forum-img">
-          <!-- <img :src="forumList.imgUrl" alt=""> -->
+          <img :src="forumList.imgUrl" alt="">
       </div>
   </div>
 </template>
@@ -89,7 +89,7 @@ export default {
             border: 1px solid $color;
             border-radius:2px;
             position: absolute;
-            top: 0;
+            top:2px;
             left:-35px;
           }
     }

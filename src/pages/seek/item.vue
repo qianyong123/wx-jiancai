@@ -33,6 +33,9 @@ export default {
             }
         }
       },
+      mounted() {
+        
+      },
       methods: {
           productDetails(id){
             wx.navigateTo({
