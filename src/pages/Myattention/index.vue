@@ -5,19 +5,20 @@
             <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
           </div>
           <div class="detail">
-              <div class="item-text">{{item.text}}</div>
+              <div class="item-text">{{item.description}}</div>
               <div class="item-name">
                   <div>
                       <img src="/static/Icon/user.jpg" alt="">
-                      <span>{{item.name}}</span>
+                      <span>{{item.dealerName}}</span>
                   </div>
                   <div @click.stop="PhoneCall(item.amount)">
                     <img src="/static/Icon/phone2.png" alt="">
-                      <span class="phone">{{item.amount}}</span>
+                      <span class="phone">{{item.phone}}</span>
                     </div>
               </div>
           </div>
       </div>
+      <div v-if="myList.length<1" class="nodata">你还没有关注的商品</div>
   </div>
 </template>
 
@@ -29,12 +30,7 @@ export default {
       motto: 'Hello World',
       userInfo: {},
        myList:[
-        {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1356666666',pay:'1'},
-        {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1356666666',pay:'1'},
-        {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1356666666',pay:'1'},
-        {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1356666666',pay:'1'},
-        {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1356666666',pay:'1'},
-        {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1356666666',pay:'1'},
+        // {id:1,dealerName:'宜兴马克瓷砖',description:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',phone:'1356666666',pay:'1'},
        ]
     }
   },
@@ -66,6 +62,9 @@ export default {
       openId
     }).then(res=>{
       console.log('我的关注',res)
+      if(res.code==200&&res.data!=null){
+          this.myList=res.data
+      }
     })
   },
    onReachBottom(){
@@ -92,6 +91,14 @@ export default {
         justify-content: space-between;
         align-items: center;
         font-size: 14px;
+      }
+      .nodata{
+        height: 100px;
+        width: 100%;
+        text-align: center;
+        line-height: 100px;
+        font-size: 14px;
+        color: #ccc;
       }
       .imgs{
         position: relative;

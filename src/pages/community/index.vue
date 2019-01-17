@@ -12,9 +12,13 @@
               <div v-if="types==index" class="border"></div>
           </div>       
       </div>
-      <scroll-view @scrolltolower='loadforum' v-if="types==0" scroll-y class="community-forum">
-          <forum v-for="(item,index) in forumList" :key="index" :forumList='item' :index='index'></forum>
-      </scroll-view>
+      <div v-if="types==0" style="width:100%;height:100%">
+            <scroll-view v-if="total>0"  @scrolltolower='loadforum'  scroll-y class="community-forum">
+              <forum v-for="(item,index) in forumList" :key="index" :forumList='item' :index='index'></forum>                     
+          </scroll-view>
+          <div v-else class="onlist">没有找到相关数据</div>
+          <div v-if="noProduct" class="noProduct">亲，没有更多了！</div>
+      </div>
       <div v-else class="community-house">
           <div class="community-sousuo">
               <div class="sousuo-input">
@@ -63,6 +67,7 @@
              <div v-if="isFilter1!=''" class="zheban"></div>
           </scroll-view>
           <div v-else class="onlist">没有找到相关数据</div>
+          <div v-if="noProduct" class="noProduct">亲，没有更多了！</div>
       </div>
   </div>
 </template>
@@ -74,6 +79,7 @@ import house  from './house'
 export default {
   data () {
     return {
+      noProduct:false,
       forumList:[
         // {id:1,title:'官方发布',content:'城市大部分普通小区中顶层复式有什么弊端？',readCount:'1458'},
         // {id:2,title:'官方发布',content:'城市大部分普通小区中顶层复式有什么弊端？',readCount:'1458'},
@@ -209,7 +215,7 @@ export default {
             this.houseList=this.houseList.concat(res.data.list)
             this.pageNum=this.pageNum+1
             this.total=res.data.total
-            
+             this.noProduct=false
         }
       })
     },
@@ -220,6 +226,7 @@ export default {
         this.articleLists()
       }else{
         console.log('没数据了')
+        this.noProduct=true
       }
     },
     //加载房价分页
@@ -230,6 +237,7 @@ export default {
        }
       else{
         console.log('没数据了')
+        this.noProduct=true
       }
     },
     //input里面键盘按下事件
@@ -345,11 +353,20 @@ export default {
         margin-right: 40px;
       }
     }
+        .noProduct{
+      height: 40px;
+      width: 100%;
+      text-align: center;
+      line-height: 40px;
+      color: #ccc;
+      font-size: 14px;
+    }
       .community-forum{
         margin-top: 20px;
         width: 100%;
         height:90%;
         padding-top: 36px;
+        
       } 
     .community-house{
       width: 100%;
@@ -463,5 +480,6 @@ export default {
       font-size: 16px;
       color: #999999;    
     }
+
 }
 </style>

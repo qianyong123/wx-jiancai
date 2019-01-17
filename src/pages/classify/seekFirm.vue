@@ -15,7 +15,7 @@
             <div class="site">{{item.address}}</div>
         </div>    
     </div>
-    <div class="img2-list" v-if="item.imgList.length>0">
+    <div class="img2-list" v-if="item.imgList.length>0&&item.imgList!=null">
         <div class="item-img2" v-for="(item2,index2) in item.imgList" :key="index2">
             <img :src="item2" alt="">
         </div>
@@ -138,14 +138,15 @@ export default {
     }
       .img2-list{
         width: 100%;
-        min-height: 65px;
+        height:65px;
         display: flex;
         justify-content: space-between;
-        margin-top: 20px;
+        margin-top:15px;
+        overflow: hidden;
       }
       .item-img2{
-        width: 65px;
-        height: 65px;
+        width:65px;
+        height:65px;
         position: relative;
         background: #ccc;
         img{

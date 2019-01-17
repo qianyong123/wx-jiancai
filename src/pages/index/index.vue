@@ -19,7 +19,8 @@
         <i-tabs :current="current_scroll" color="#1DB389" scroll @change="handleChangeScroll">
           <i-tab
             key="0"
-            title="热门产品"></i-tab>  
+            title="热销产品"
+             @click="changName('')"></i-tab>  
             <i-tab
             v-for="tab in tabsList"
             :key="tab.id"
@@ -27,7 +28,7 @@
             :title="tab.name"></i-tab>          
         </i-tabs>
     </div>
-   <div class="commList">
+   <div v-if="total>0" class="commList">
         <item 
         v-for="(item,index) in commList"
         :key="index"
@@ -35,6 +36,8 @@
         :index='index'
         :text="item"></item>
     </div>
+    <div v-else class="nodata">没有数据</div>
+    <div v-if="noProduct" class="noProduct">亲，没有更多了！</div>
   </div>
 </template>
 
@@ -53,6 +56,7 @@ export default {
   data () {
     return {
       indexBanner:'',
+      noProduct:false,//没有更多了
       productList:[
         {id:1,img:'/static/tabBar/zhuangxiu.png',text:'装修建材'},
         {id:2,img:'/static/tabBar/gongsi.png',text:'设计公司'},
@@ -61,15 +65,15 @@ export default {
       ],
       tabsList:[
         {id:1,name:'选项1'},
-        {id:2,name:'选项1'},
-        {id:3,name:'选项1'},
-        {id:4,name:'选项1'},
-        {id:5,name:'选项1'},
-        {id:6,name:'选项1'},
-        {id:7,name:'选项1'},
-        {id:8,name:'选项1'},
-        {id:9,name:'选项1'},
-        {id:10,name:'选项1'},
+        {id:2,name:'选项2'},
+        {id:3,name:'选项3'},
+        {id:4,name:'选项4'},
+        {id:5,name:'选项5'},
+        {id:6,name:'选项6'},
+        {id:7,name:'选项7'},
+        {id:8,name:'选项8'},
+        {id:9,name:'选项9'},
+        {id:10,name:'选项10'},
       ],
       commList:[
         // {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
@@ -100,7 +104,6 @@ export default {
           this.indexBanner=res.data.imgUrl  
       }
     })
-    this.indexList()
   },
   methods: {
     indexList(){
@@ -108,8 +111,11 @@ export default {
         commodityList({
         pageNum:this.pageNum,
         pageSize:this.pageSize,
-        type:'',
-        name:this.name
+        type:this.name,
+        isHot:this.current_scroll,
+        // name:this.name,
+        // isHotL:this.current_scroll,
+        openId:this.openId
         }).then(res=>{
           console.log('商品列表',res)   
               if(res.code==200&&res.data!=null){
@@ -123,22 +129,23 @@ export default {
     productAttentions(text,index){
       console.log(text,index)
       productAttention({
-        flag:text.isAttention==1?1:0,
+        flag:text.isAttention==1?0:1,
         id:text.id,
         openId :this.openId 
       }).then(res=>{
         console.log('关注、取消商品',res)
         if(res.code==200&&res.msg=='成功'){
-            this.commList[index].isAttention=text.isAttention==1?0:1
-            if(text.isAttention==0){
+            // this.commList[index].isAttention=text.isAttention==1?0:1
+            this.indexList()
+            if(text.isAttention==1){
                 wx.showToast({
-                title: '取消关注',
+                title: '关注成功',
                 icon: 'success',
                 duration: 2000
               })
             }else{
                   wx.showToast({
-                title: '关注成功',
+                title: '取消关注',
                 icon: 'success',
                 duration: 2000
               })
@@ -165,6 +172,7 @@ export default {
                 if(res.code==200&&res.data!=null){
                   wx.setStorageSync('openId',res.data.openId)
                   this.openId=res.data.openId
+                  this.indexList()
                 }
               })
             }
@@ -180,7 +188,10 @@ export default {
     //点击热门产品
     changName(name){
         console.log(name)
-        // this.name=name
+        this.commList=[]
+        this.name=name
+        this.noProduct=false
+        this.indexList()
     },
     //跳转到搜索页面
     seekInput(){
@@ -208,6 +219,7 @@ export default {
     console.log('上拉',page)
     if(this.pageNum>page){
       console.log('没有数据了')
+      this.noProduct=true
       return
     }else{
         this.indexList()        
@@ -289,6 +301,21 @@ export default {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+    }
+    .noProduct{
+      height: 40px;
+      width: 100%;
+      text-align: center;
+      line-height: 40px;
+      color: #ccc;
+      font-size: 14px;
+    }
+    .nodata{
+      margin-top: 70px;
+      width: 100%;
+      font-size: 16px;
+      text-align: center;
+      color: #ccc;
     }
 }
  

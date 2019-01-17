@@ -36,7 +36,8 @@
               </div>
            </div>  
             <seek-firm v-else :commList='classiifyList' :type='type'></seek-firm>  
-            <div v-if="classiifyList.length<1" class="ondata">暂时还没有数据</div>   
+            <div v-if="classiifyList.length<1" class="ondata">暂时还没有数据</div>  
+            <div v-if="noProduct" class="noProduct">亲，没有更多了！</div>
           </scroll-view>
       </div>
   </div>
@@ -48,6 +49,7 @@ import {classSort} from '../../utils/api.js'
 export default {
   data () {
     return {
+      noProduct:false,
         classiifyList:[
           // {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'首付撒'},
           // {id:1,imgUrl:'http://192.168.2.106/img/352356.jpg',name:'墙地砖'},
@@ -109,6 +111,8 @@ export default {
       let page=Math.ceil(this.total/10)
       if(this.pageNum<=page){
         this.classSorts()
+      }else{
+        this.noProduct=true
       }
    },
    //分类列表
@@ -122,7 +126,8 @@ export default {
         if(res.code==200&&res.data!=null){
             this.classiifyList=res.data.list
             this.total=res.data.total
-            this.pageNum=this.pageNum+1
+            this.pageNum=this.pageNum+1      
+            this.noProduct=false
         }
       })
    }

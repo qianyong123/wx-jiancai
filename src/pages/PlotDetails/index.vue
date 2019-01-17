@@ -55,7 +55,7 @@
       </div>
       <div class="bcg"></div>
       <div class="map-title">位置周边</div>
-      <maps></maps>
+      <maps :gps='gps'></maps>
   </div>
 </template>
 
@@ -68,7 +68,8 @@ export default {
     return {
       name: '东九一号',
       key:2,
-      data:{}
+      data:{},
+      gps:[]
     }
   },
 
@@ -94,6 +95,9 @@ export default {
         if(res.code==200&&res.data!=null){
             this.data=res.data
             store.commit('moreMessge',res.data)
+            if(res.data.gps!=null){
+              this.gps=res.data.gps.splice(',')
+            }
         }
       })
     }

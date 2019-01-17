@@ -12,7 +12,7 @@ export const userInfo=(data)=>{
 //商品列表
 export const commodityList=(data)=>{
     wx.showLoading({title: '加载中...'})
-       return request.request(`/product/list`, qs.stringify(data),{method:'get',headers:{nihao:'afsfs'}})
+       return request.request(`/product/applets/list`, qs.stringify(data),{method:'get',headers:{nihao:'afsfs'}})
    }
 //banner
 export const indexBanner=(data)=>{

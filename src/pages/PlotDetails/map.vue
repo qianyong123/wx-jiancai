@@ -16,6 +16,7 @@
 <script>
 
 export default {
+  props:['gps'],
   data () {
     return {
       latitude:'',
@@ -77,7 +78,7 @@ export default {
   }
   },
   mounted() {
-    
+    console.log('gps',this.gps)
   },
   onLoad(){
     let data=this.$root.$mp.query

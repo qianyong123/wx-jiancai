@@ -67,7 +67,7 @@ export default {
         position: relative;
         .title{
             width: 210px;
-            height:50px;
+            height:40px;
             overflow: hidden;
             font-size: 16px;
             font-weight: 600;

@@ -13,7 +13,7 @@
           </div>
       </div>
       <div class="state">
-          <div class="state-name">{{product.description}}</div>
+          <div class="state-name">{{product.name}}</div>
           <!-- <div class="attention">
               <img src="/static/Icon/myspell1.png" alt="">
               <span>关注</span>
@@ -41,33 +41,35 @@
       <div class="bcg"></div>
       <div class="product">
         <div class="product-box">
-            <div class="logo"></div>
+            <div class="logo">
+              <img :src="dealer.brandLogo" alt="">
+            </div>
             <div class="nameBox">
                 <div>
-                    <span class="product-name">{{product.brand}}</span>
+                    <span class="product-name">{{dealer.brandName}}</span>
                     <span class="merchant">总经销商</span>
                 </div>
                 <div>
-                    <span class="product-type">吊顶</span>
-                    <span class="product-type">龙骨</span>
+                    <span v-for="(item,index) in dealerLabel" 
+                    :key="index" class="product-type">{{item}}</span>           
                 </div>
             </div>
         </div>   
         <div class="product-details">
             <img src="/static/Icon/map2.png" alt="">
             <span class="site">地址：</span>
-            <span>{{product.brand}}</span>
+            <span>{{dealer.address}}</span>
             <span @click="navMap(longitude,latitude)" class="seekMap">查看地图</span>
         </div>
         <div class="product-details">
             <img src="/static/Icon/time.png" alt="">
             <span class="site">营业时间：</span>
-            <span>{{product.brand}}</span>
+            <span>{{dealer.startDate}}-{{dealer.endDate}}</span>
         </div>
         <div class="product-details">
             <img src="/static/Icon/phone.png" alt="">
             <span class="site">商家电话：</span>
-            <span>{{product.brand}}</span>
+            <span>{{dealer.phone}}</span>
         </div>     
       </div>
       <div class="oncePsellBox">
@@ -101,14 +103,37 @@ export default {
       modalTiele1:'',
       longitude:'1562', //经度
       latitude:'56461', //经度
-      product:{}//商品详情
+      product:{},//商品详情
+      data:{},
+      dealer:{},//经销商信息
+      dealerLabel:[],
     }
   },
 
   components: {
     
   },
-
+ onLoad(){
+       let data=this.$root.$mp.query
+      this.data=data
+      console.log(data)
+      if(data.id){
+          getData(`/product/detail/${data.id}`).then(res=>{
+          console.log('商品详情',res)
+          if(res.code==200&&res.data!=null){
+                this.product=res.data.product
+                this.dealer=res.data.dealer
+                if(res.data.dealerLabel!=null){
+                    if(res.data.dealerLabel.length>4){
+                      this.dealerLabel=res.data.dealerLabel.slice(0,4)
+                    }else{
+                       this.dealerLabel=res.data.dealerLabel
+                    }
+                }
+          }
+        })
+      }
+  },
   methods: {
     handleClose(id){
       this.visible1=true
@@ -123,54 +148,62 @@ export default {
       }
     },
     handleClose1(index){
-      this.visible1=false
+      let phone=/^1[34578]\d{9}$/ //手机
       if(index==1){
-          productDetail({
-            businessPhone:'1365555555',
-            name:this.data.name,
-            phone:this.input,
-            type:'建材-'+`${this.modalTiele1}`
-          }).then(res=>{
-            console.log('登记信息',res)
-            if(res.code==200&&res.msg=='成功'){
-                  wx.showToast({
-                  title: '成功',
-                  icon: 'success',
-                  duration: 1500
-                })
-            }else{
-                  wx.showToast({
-                  title:res.msg,      
-                  duration: 1500
-                })
-            }
-          })
+        if(this.input==''){
+                wx.showToast({
+              title: '号码不能为空！',
+              icon: 'none',
+              duration:2000
+            })
+        }
+        else if(!phone.test(this.input)){
+              wx.showToast({
+              title: '号码输入有误！',
+              icon: 'none',
+              duration:2000
+            })
+        }
+        else{
+            productDetail({
+              businessPhone:this.dealer.phone,
+              name:this.product.name,
+              phone:this.input,
+              type:'建材-'+`${this.modalTiele1}`
+            }).then(res=>{
+              console.log('登记信息',res)
+                this.visible1=false
+              if(res.code==200&&res.msg=='成功'){ 
+                wx.showToast({
+                    title: this.modalTiele1+'成功',
+                    icon: 'success',
+                    duration: 1500
+                  })
+              }else{
+                    wx.showToast({
+                    title:res.msg,      
+                    duration: 1500
+                  })
+              }
+            })
+        }
+        
+      }else{
+           this.visible1=false
       }
     },
     //查看点图
     navMap(long,lat){
         console.log(long,lat)
         wx.navigateTo({
-          url:`../map/main`
+          url:`../map/main?gps=${ this.dealer.gps}`
       })
     }
   },
   mounted() {
  
   },
-  onLoad(){
-       let data=this.$root.$mp.query
-      this.data=data
-      console.log(data)
-      if(data.id){
-          getData(`/product/detail/${data.id}`).then(res=>{
-          console.log('商品详情',res)
-          if(res.code==200&&res.data!=null){
-                this.product=res.data.product
-          }
-        })
-      }
-  },
+ 
   onShow(){
    
       
@@ -214,12 +247,13 @@ export default {
         display: flex;
         align-items: center;
         color: #fff;
-        font-size: 14px;
+        font-size: 16px;
         .spellImg{
             width: 90px;
             display: flex;
             height: 23px;
             border: 1px solid #fff;
+            align-items: center;
             border-radius: 3px;
             margin-right: 10px;
             div:nth-child(1){

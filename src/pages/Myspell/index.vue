@@ -25,6 +25,7 @@
               </div>
           </div>
       </div>
+      <div v-if="myList.length<1" class="nodata">你还没有拼团的商品</div>
   </div>
 </template>
 
@@ -36,12 +37,12 @@ export default {
       motto: 'Hello World',
       userInfo: {},
        myList:[
-        {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'1'},
-        {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'2'},
-        {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'3'},
-        {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'1'},
-        {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'1'},
-        {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'1'},
+        // {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'1'},
+        // {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'2'},
+        // {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'3'},
+        // {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'1'},
+        // {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'1'},
+        // {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'1'},
        ]
     }
   },
@@ -85,6 +86,14 @@ export default {
 @import '../../style/base.scss';
     .Myspell{
       width: 100%;
+       .nodata{
+        height: 100px;
+        width: 100%;
+        text-align: center;
+        line-height: 100px;
+        font-size: 14px;
+        color: #ccc;
+      }
       .item{
         height: 100px;
         width: 348px;

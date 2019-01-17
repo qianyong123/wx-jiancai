@@ -86,6 +86,7 @@
           <seek-firm v-else :commList='commList' :oncommType='oncommType' @onload='onload'></seek-firm>
       </div>
       <div class="nocommList" v-if="commList.length<1">没有找到相关数据</div>
+      <div v-if="noProduct" class="noProduct">亲，没有更多了！</div>
     </div>
     <!-- 品牌右侧弹框 -->
     <i-drawer style="width:100%;height:100%;" mode="right" :visible="showRight1" @close="toggright1s">
@@ -184,6 +185,7 @@ export default {
       isresult:true,
       showRight1:false,
       showRight2:false,
+      noProduct:false,
       wordsIndex:[],//品牌索引
       chooseHot:[ //选购热点
         {id:1,name:'牛栏山'},
@@ -380,6 +382,8 @@ export default {
       }
       else if(this.pageNum<=page){      
         this.productFliter()
+      }else{
+        this.noProduct=true
       }
      
     },
@@ -452,22 +456,26 @@ export default {
         floorPrice:this.floorPrice,
         highestPrice:this.highestPrice,
         newProduct:this.newProduct,
-        up:this.up
+        up:this.up,
+        brand:this.brand
       }).then(res=>{
         console.log('主页搜索商品',res)
         if(res.code==200&&res.data!=null){
             this.commList=this.commList.concat(res.data.list) 
              this.total=res.data.total
-             this.pageNum=this.pageNum+1     
+             this.pageNum=this.pageNum+1       
+              this.noProduct=false
+                
         }
       })
     },
     //点击热门品牌
     onpinpai(item){
       console.log(item.name)
+      this.brand=item.name
       this.dataType=4
       this.showRight1=false
-      
+      this.productFliter()
     },
     //选择环保
     cutHuanbao(item){

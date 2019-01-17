@@ -7,19 +7,19 @@
         </div>
         <div class="item-name">
             <div class="name">{{item.name}}</div>
-            <div class="site">{{item.name}}</div>
+            <div class="site">{{item.address}}</div>
         </div>    
     </div>
-    <div class="img2-list">
-        <div class="item-img2">
+    <div class="img2-list" v-if="item.imgList!=null&&item.imgList.length>0">
+         <div class="item-img2" v-for="(item2,index2) in item.imgList" :key="index2">
+            <img :src="item2" alt="">
+        </div>
+        <!-- <div class="item-img2">
             <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
         </div>
         <div class="item-img2">
             <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
-        </div>
-        <div class="item-img2">
-            <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
-        </div>
+        </div> -->
     </div>  
   </div>
 </scroll-view>
@@ -65,6 +65,7 @@ export default {
     .seekFirm-items{
       padding: 15px;
       width: 100%;
+      min-height: 50px;     
       background: #fff;
       margin-bottom: 20px;
       font-size: 14px; 
@@ -94,12 +95,24 @@ export default {
         justify-content: space-between;
         overflow: hidden;
         .name{
+          width: 100%;
+          height:18px;       
+          line-height:18px;
           font-size: 16px;
           font-weight: 600;
+          white-space : normal;
+          overflow:hidden;
+          text-overflow: ellipsis;
         }
         .site{
+           height:16px;
+          line-height: 16px;
+          width: 100%;
           font-size: 14px;
           color: #ccc;
+          white-space : normal;
+          overflow:hidden;
+          text-overflow: ellipsis;
         }
     }
       .img2-list{
@@ -108,6 +121,7 @@ export default {
         height: 97px;
         display: flex;
         justify-content: space-between;
+        overflow: hidden;
       }
       .item-img2{
         width: 97px;
