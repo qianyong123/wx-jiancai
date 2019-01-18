@@ -30,7 +30,7 @@
               @click="onComm(item)"
               :key="index">
                   <div class="item-img">
-                      <!-- <img :src="item.imgUrl" alt=""> -->
+                      <img :src="item.imgUrl" alt="">
                   </div>
                   <div class="name2">{{item.name}}</div>
               </div>
@@ -115,7 +115,7 @@ export default {
         this.noProduct=true
       }
    },
-   //分类列表
+   //分类列表logoUrl
    classSorts(){
      classSort({
         type:this.type,
@@ -124,7 +124,13 @@ export default {
       }).then(res=>{
         console.log('建材馆列表',res)
         if(res.code==200&&res.data!=null){
-            this.classiifyList=res.data.list
+          let list=res.data.list
+            if(this.type==2||this.type==3){
+              list.forEach((data2,index)=>{
+                list[index].logoImg=data2.logoUrl
+              })
+            }
+            this.classiifyList= this.classiifyList.concat(list)
             this.total=res.data.total
             this.pageNum=this.pageNum+1      
             this.noProduct=false

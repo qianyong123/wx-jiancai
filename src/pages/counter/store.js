@@ -8,7 +8,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     count: 0,
-    data:{}
+    data:{},
+    gps:[]
   },
   mutations: {
     increment: (state) => {
@@ -19,8 +20,9 @@ const store = new Vuex.Store({
       const obj = state
       obj.count -= 1
     },
-    moreMessge(state,data){
+    moreMessge(state,data,gps){
       state.data=data
+      state.gps=gps
     }
   }
 })

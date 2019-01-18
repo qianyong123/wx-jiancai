@@ -105,6 +105,12 @@ export default {
       }
     })
   },
+  onShow(){
+    if(this.openId!=''){
+      this.commList=[]
+      this.indexList()
+    }
+  },
   methods: {
     indexList(){
         //首页商品列表
@@ -129,15 +135,19 @@ export default {
     productAttentions(text,index){
       console.log(text,index)
       productAttention({
-        flag:text.isAttention==1?0:1,
+        flag:text.flag==1?0:1,
         id:text.id,
         openId :this.openId 
       }).then(res=>{
         console.log('关注、取消商品',res)
         if(res.code==200&&res.msg=='成功'){
-            // this.commList[index].isAttention=text.isAttention==1?0:1
-            this.indexList()
-            if(text.isAttention==1){
+            let amount=text.attentionCount
+            this.commList[index].attentionCount=text.flag==1?amount+1:amount-1
+            this.commList[index].flag=text.flag==1?0:1
+            // this.commList=[]
+            // this.pageNum=1
+            // this.indexList()
+            if(text.flag==0){
                 wx.showToast({
                 title: '关注成功',
                 icon: 'success',

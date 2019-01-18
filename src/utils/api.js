@@ -84,7 +84,7 @@ export const houseList=(data)=>{
 //小区详情
 export const houseDtail=(data)=>{
     wx.showLoading({title: '加载中...'})
-    return request.request(`/house/detail/${data.id}`, qs.stringify(data),{method:'get',})
+    return request.request(`/house/applets/detail/${data.id}`, qs.stringify(data),{method:'get',})
 }
 
 

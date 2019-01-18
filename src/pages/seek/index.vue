@@ -340,6 +340,7 @@ export default {
         console.log('所有品牌',res)
         if(res.code==200&&res.data!=null){
           this.cities=res.data
+          this.brandList()    
         }
       })
       console.log('query',data)
@@ -374,9 +375,9 @@ export default {
       if(this.dataType=='6'&&this.pageNum<=page){
         this.sortProducts(this.data)
       }
-      else if(this.dataType=='4'&&this.pageNum<=page){
-        console.log('品牌')
-      }
+      // else if(this.dataType=='4'&&this.pageNum<=page){
+      //   console.log('品牌')
+      // }
       else if(this.dataType=='7'&&this.pageNum<=page){
         this.productFliter2()
       }
@@ -391,14 +392,16 @@ export default {
     productAttentions(text,index){
       console.log(text,index)
       productAttention({
-        flag:text.isAttention==1?1:0,
+        flag:text.flag==1?0:1,
         id:text.id,
         openId :this.openId 
       }).then(res=>{
         console.log('关注、取消商品',res)
         if(res.code==200&&res.msg=='成功'){
-            this.commList[index].isAttention=text.isAttention==1?0:1
-            if(text.isAttention==0){
+          let amount=text.attentionCount
+            this.commList[index].attentionCount=text.flag==1?amount+1:amount-1
+             this.commList[index].flag=text.flag==1?0:1
+            if(text.flag==1){
                 wx.showToast({
                 title: '取消关注',
                 icon: 'success',
@@ -599,7 +602,6 @@ export default {
           this.iszhList=id
           if(id==2){
             this.toggright1s();
-            this.brandList()    
           }
           else if(id==3){
               this.toggright1s2();

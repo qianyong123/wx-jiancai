@@ -2,16 +2,16 @@
   <div class="Myattention" >
       <div class="item" v-for="(item,index) in myList" :key="index" @click="details(item)">
           <div class="imgs">
-            <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+            <img :src="item.imgUrl" alt="">
           </div>
           <div class="detail">
               <div class="item-text">{{item.description}}</div>
               <div class="item-name">
                   <div>
                       <img src="/static/Icon/user.jpg" alt="">
-                      <span>{{item.dealerName}}</span>
+                      <span>{{item.brand}}</span>
                   </div>
-                  <div @click.stop="PhoneCall(item.amount)">
+                  <div @click.stop="PhoneCall(item.phone)">
                     <img src="/static/Icon/phone2.png" alt="">
                       <span class="phone">{{item.phone}}</span>
                     </div>

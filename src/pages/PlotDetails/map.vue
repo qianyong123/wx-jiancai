@@ -2,8 +2,8 @@
   <div class="map" >
       <map
         id="map"
-        :longitude="markers[0].longitude"
-        :latitude="markers[0].latitude"
+        :longitude="gps[0]"
+        :latitude="gps[1]"
         scale="16"
         :markers="markers"
         @markertap="markertap"
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-
+import store from '../counter/store.js'
 export default {
   props:['gps'],
   data () {
@@ -26,8 +26,8 @@ export default {
       markers: [{
         iconPath: '/static/Icon/map.png',
         id: 0,
-        latitude:'30.631273',
-        longitude: '104.03614',
+        latitude:gps[1],
+        longitude:gps[0],
         width: 30,
           height: 30 
     }],
@@ -78,22 +78,24 @@ export default {
   }
   },
   mounted() {
-    console.log('gps',this.gps)
+    // this.markers[0].latitude = this.gps[1]
+    //   this.markers[0].longitude =  this.gps[0]
   },
   onLoad(){
-    let data=this.$root.$mp.query
     let that=this
-    console.log(data)
-    wx.getLocation({
-      type: 'gcj02',
-      success(res){
-        console.log(res)
-        that.markers[0].latitude = res.latitude
-        that.markers[0].longitude = res.longitude
-        const speed = res.speed
-        const accuracy = res.accuracy
-      }
-    })
+     this.markers[0].latitude= store.state.gps[1]
+     this.markers[0].longitude= store.state.gps[0]
+    console.log('gps',store.state.gps)
+    // wx.getLocation({
+    //   type: 'gcj02',
+    //   success(res){
+    //     console.log(res)
+    //     that.markers[0].latitude = res.latitude
+    //     that.markers[0].longitude = res.longitude
+    //     const speed = res.speed
+    //     const accuracy = res.accuracy
+    //   }
+    // })
   }
 }
 </script>

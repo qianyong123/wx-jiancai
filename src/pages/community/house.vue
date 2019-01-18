@@ -11,8 +11,10 @@
             </div>
             <div class="xiaoqu-site">{{houseList.address}}</div>
             <div>
-                <span class="type">住宅</span>
-                 <span class="type">商业区</span>
+                <span v-for="(item2,index2) in houseList.label" 
+                :key="index2" 
+                class="type">{{item2}}</span>
+                 <!-- <span class="type">{{houseList.label}}</span> -->
             </div>
         </div>
         <div class="xiaoqu-price">
@@ -60,7 +62,7 @@ props: ['houseList'],
 @import '../../style/base.scss';
 .house{
     width: 100%;
-    height: 120px;
+    min-height: 120px;
     padding:0 5px 0 20px;
     border-bottom:1px solid #BBBBAA;
     display: flex;
@@ -86,11 +88,10 @@ props: ['houseList'],
     }
     .site{
         width: 100px;
-        height: 75px;
+        min-height: 75px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        overflow: hidden;
         .xiaoqu-name{
             font-size: 14px;
             font-weight: 600;
@@ -112,6 +113,7 @@ props: ['houseList'],
             border: 1px solid #ccc;
             border-radius: 2px;
             margin-right: 5px;
+            margin-bottom: 2px;
         }
     }
     .xiaoqu-price{

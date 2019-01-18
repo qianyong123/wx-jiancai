@@ -27,7 +27,7 @@ export default {
       list:[
         {id:1,name:'申请成为入驻商',imgUrl:'/static/Icon/shang.png'},
         {id:2,name:'我的关注',imgUrl:'/static/Icon/my2.png'},
-        {id:3,name:'我的拼团',imgUrl:'/static/Icon/spell1.png'},
+        // {id:3,name:'我的拼团',imgUrl:'/static/Icon/spell1.png'},
       ]
     }
   },

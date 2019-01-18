@@ -4,7 +4,7 @@
           <span>{{data.name}}</span>
           <span v-if="data.status==0">在售</span>
           <span v-else>未售</span>
-          <!-- <span>{{data.type}}</span> -->
+          <span v-for="(item,index) in label" :key="index">{{item}}</span>
       </div>
       <div class="PlotDetails-banner">
         <img :src="data.imgUrl" alt="">
@@ -37,25 +37,38 @@
       <div class="bcg"></div>
       <div class="sell">
         <div class="sell-title">在售房型</div>
-        <div class="detail3">
+        <div class="detail3" v-for="(item,index) in houseModelList" :key="index">
             <div class="img">
-              <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+              <img :src="item.houseImgOne" alt="">
             </div>
             <div class="detail3-name">
-              <div>3室2厅1厨2卫</div>
-              <div>建面 115㎡</div>
+              <div>{{item.houseNameOne}}</div>
+              <div>{{item.houseDescriptionOne}}</div>
               <div>
-                  <span>地铁口</span>
-                  <span>商业区</span>
-                  <span>南北通透</span>
+                  <span 
+                  v-for="(item2,index2) in item.houseLabelOne" 
+                  :key="index2">{{item2}}</span>
+                  <!-- <span>商业区</span>
+                  <span>南北通透</span> -->
               </div>
-              <div>约150万/套</div>
+              <div>{{item.houseValuationOne}}</div>
             </div>
         </div>
       </div>
       <div class="bcg"></div>
       <div class="map-title">位置周边</div>
-      <maps :gps='gps'></maps>
+      <div class="map" >
+        <map
+          id="map"
+          :longitude="gps[0]"
+          :latitude="gps[1]"
+          scale="16"
+          :markers="markers"
+          @markertap="markertap"
+          show-location
+          style="width: 100%; height:100%;"
+        ></map>
+    </div>
   </div>
 </template>
 
@@ -69,7 +82,17 @@ export default {
       name: '东九一号',
       key:2,
       data:{},
-      gps:[]
+      gps:[],
+      houseModelList:[],
+      label:[],
+      markers: [{
+        iconPath: '/static/Icon/map.png',
+        id: 0,
+        latitude:'',
+        longitude:'',
+        width: 30,
+          height: 30 
+    }],
     }
   },
 
@@ -93,10 +116,20 @@ export default {
       houseDtail({id:data.id}).then(res=>{
         console.log('楼盘详情',res)
         if(res.code==200&&res.data!=null){
-            this.data=res.data
-            store.commit('moreMessge',res.data)
-            if(res.data.gps!=null){
-              this.gps=res.data.gps.splice(',')
+            this.data=res.data.detail
+            this.houseModelList=res.data.houseModelList
+            this.label=res.data.label
+            if(res.data.houseModelList.length>0){
+                res.data.houseModelList.forEach((data2,index)=>{
+                    this.houseModelList[index].houseLabelOne=data2.houseLabelOne.split(',')
+                })
+            }
+            store.commit('moreMessge',res.data.detail)
+            if(res.data.detail.gps!=null){
+              this.gps=res.data.detail.gps.split(',')
+               this.markers[0].latitude = this.gps[1]
+               this.markers[0].longitude =  this.gps[0]
+              console.log(this.gps)
             }
         }
       })
@@ -130,13 +163,13 @@ export default {
             border-radius: 2px;
             margin:0 10px;
         }
-        //  span:nth-child(3){
-        //     padding:1px 5px;
-        //     font-size: 12px;
-        //     background: #FFF0EB;
-        //     color: #FF6633;
-        //     border-radius: 2px;
-        // }
+         span:nth-child(3){
+            padding:1px 5px;
+            font-size: 12px;
+            background: #FFF0EB;
+            color: #FF6633;
+            border-radius: 2px;
+        }
     }
     .PlotDetails-banner{
       width: 100%;
@@ -263,6 +296,18 @@ export default {
       font-size:20px;
       font-weight: 600;
       margin: 20px 0;
+    }
+     .map{
+    width: 100%;
+    height:300px;
+
+      .name{
+        width:100%;
+        margin: 30px auto;
+        line-height:22px;
+        font-size: 16px;
+        text-align: center;
+      }
     }
   }
 </style>

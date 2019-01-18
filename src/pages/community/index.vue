@@ -190,8 +190,8 @@ export default {
         name:this.input,
       }).then(res=>{
         console.log('房价列表',res)
-        if(res.code==200&&res.data!=null){
-            this.houseList=this.houseList.concat(res.data.list)
+        if(res.code==200&&res.data!=null){                  
+            this.houseList=this.houseList.concat(res.data.list )
             this.pageNum=this.pageNum+1
             this.total=res.data.total
             this.houseData=1
@@ -212,7 +212,12 @@ export default {
       }).then(res=>{
         console.log('房价列表',res)
         if(res.code==200&&res.data!=null){
-            this.houseList=this.houseList.concat(res.data.list)
+          let list= res.data.list
+              list.forEach((data2,index)=>{  
+                      
+                list[index].label=data2.label.split(',')            
+            })  
+            this.houseList=this.houseList.concat(list)
             this.pageNum=this.pageNum+1
             this.total=res.data.total
              this.noProduct=false

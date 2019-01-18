@@ -69,7 +69,7 @@
                   </div>
                   <div style="margin-top:10px;">
                       <div style="color:#000;font-size:16px;"> {{item.caseName}}</div>
-                      <div style="font-size:14px;">{{item.caseDescription}}</div>
+                      <div style="font-size:12px;">{{item.caseDescription}}</div>
                   </div>
               </div>
           </div>
@@ -78,7 +78,7 @@
               <div class="userName" v-for="(item,index) in data.designTeamList" :key="index">
                   <img class="userImg" src="/static/Icon/user.jpg" alt="">
                   <div> {{item.personnel}}</div>
-                  <div style="font-size:14px;color:#666681;"> {{item.description}}</div>
+                  <div style="font-size:12px;color:#666681;"> {{item.description}}</div>
               </div>
           </div>
           <div class="brandDetail" style="margin-top:30px;">施工团队</div>
@@ -86,7 +86,7 @@
               <div class="userName" v-for="(item,index) in data.constructionTeamList" :key="index">
                   <img class="userImg" src="/static/Icon/user.jpg" alt="">
                   <div>{{item.personnel}}</div> 
-                    <div style="font-size:14px;color:#666681;">{{item.description}}</div>               
+                    <div style="font-size:12px;color:#666681;">{{item.description}}</div>               
               </div>
               
           </div>
@@ -100,7 +100,7 @@
                   </div>
                   <div style="margin-top:10px;">
                       <div style="color:#000;font-size:16px;"> {{item.serviceName}}</div>
-                      <div style="font-size:14px;">￥{{item.serviceDescription}}㎡</div>
+                      <div style="font-size:12px;">{{item.serviceDescription}}</div>
                   </div>
               </div>
           </div>
@@ -109,7 +109,7 @@
               <div class="userName" v-for="(item,index) in data.serviceTeamList" :key="index">
                   <img class="userImg" src="/static/Icon/user.jpg" alt="">
                   <div>{{item.servicePersonnel}}</div>  
-                  <div style="font-size:14px;color:#666681;">{{item.serviceDescription}}</div>              
+                  <div style="font-size:12px;color:#666681;">{{item.serviceDescription}}</div>              
               </div>           
           </div>
       </div>

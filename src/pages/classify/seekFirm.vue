@@ -3,7 +3,7 @@
   <div  class="seekFirm-items" v-for="(item, index) in commList" :key="index" @click="fimrDetails(item)">
     <div class="seek-logo">
         <div class="item-img">
-            <!-- <img :src="item.imgUrl" alt=""> -->
+            <img :src="item.logoImg" alt="">
         </div>
         <div class="item-name">
             <div class="name">
@@ -69,7 +69,7 @@ export default {
     width:235px;
     background: #fff;
     .seekFirm-items{
-      padding: 10px;
+      // padding: 10px;
       width: 100%;
       min-height:50px;
       background: #fff;
@@ -138,17 +138,20 @@ export default {
     }
       .img2-list{
         width: 100%;
-        height:65px;
+        min-height:65px;
         display: flex;
-        justify-content: space-between;
+        flex-wrap: wrap;
+        // justify-content: space-between;
         margin-top:15px;
-        overflow: hidden;
+        // overflow: hidden;
       }
       .item-img2{
         width:65px;
         height:65px;
         position: relative;
         background: #ccc;
+        margin-bottom: 13px;
+        margin-right:13px;
         img{
           width: 100%;
           height: 100%;

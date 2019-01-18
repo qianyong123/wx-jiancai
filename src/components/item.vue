@@ -7,10 +7,10 @@
         <div class="item-amount">
             <div>
               <img class="item-icon" src="/static/Icon/user.jpg" alt="">
-                <span>{{text.dealerName}}</span>
+                <span>{{text.brand}}</span>
             </div>
             <div @click.stop="$emit('productAttentions',text,index)">
-               <img v-if="text.isAttention==1" class="item-icon" src="/static/Icon/att1.png" alt="">
+               <img v-if="text.flag==1" class="item-icon" src="/static/Icon/att1.png" alt="">
                <img v-else class="item-icon" src="/static/Icon/att2.png" alt="">
               <span>{{text.attentionCount}}</span>
             </div>
@@ -41,6 +41,7 @@ export default {
          //跳转到商品详情页面
         skipDetails(id){
           console.log(id)
+
           wx.navigateTo({
             url:`../details/main?id=${id}`
           })
