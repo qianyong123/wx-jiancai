@@ -121,7 +121,11 @@ export default {
             this.label=res.data.label
             if(res.data.houseModelList.length>0){
                 res.data.houseModelList.forEach((data2,index)=>{
+                  if(data2.houseLabelOne!=null&&data2.houseLabelOne!=''){
                     this.houseModelList[index].houseLabelOne=data2.houseLabelOne.split(',')
+                  }else{
+                    this.houseModelList[index].houseLabelOne=[]
+                  }
                 })
             }
             store.commit('moreMessge',res.data.detail)

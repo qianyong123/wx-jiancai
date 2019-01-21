@@ -99,7 +99,7 @@
                 <span class="hot">热门品牌</span>    
                 <span class="advertising">广告</span> 
               </div>
-              <div class="hot-brand">
+              <div v-if="hotbrands.length>0" class="hot-brand">
                 <div v-for="item in hotbrands" :key="item.id" @click="onpinpai(item)">
                     {{item.name}}
                 </div>
@@ -269,12 +269,12 @@ export default {
        ],
         //热门品牌
         hotbrands:[
-          {id:1,name:'牛栏山'},
-          {id:2,name:'牛栏'},
-          {id:3,name:'牛栏山'},
-          {id:4,name:'牛栏山'},
-          {id:5,name:'牛栏山'},
-          {id:6,name:'牛栏'},
+          // {id:1,name:'牛栏山'},
+          // {id:2,name:'牛栏'},
+          // {id:3,name:'牛栏山'},
+          // {id:4,name:'牛栏山'},
+          // {id:5,name:'牛栏山'},
+          // {id:6,name:'牛栏'},
         ],
         materials:[],
         filterInput1:'',

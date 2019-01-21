@@ -17,7 +17,7 @@
                       <div>
                           <span
                            v-for="(item,index) in label" 
-                           :key="index"
+                           :key="index"                  
                            class="product-type">{{item}}</span>
                           <!-- <span class="product-type">龙骨</span> -->
                       </div>
@@ -188,10 +188,15 @@ export default {
                     this.dealer=res.data.dealer
                     this.label=res.data.label
                       if(res.data.label!=null){
-                            if(res.data.label.length>4){
-                            this.label=res.data.label.slice(0,4)
+                        let label=res.data.label.filter((data)=>{
+                            if(data!=''){
+                                return data
+                            }
+                          })
+                            if(label.length>4){
+                            this.label=label.slice(0,4)
                             }else{
-                           this.label=res.data.label
+                           this.label=label
                             }
                         }
                        wx.setNavigationBarTitle({
@@ -213,10 +218,15 @@ export default {
                     this.dealer=res.data.dealer
                     this.label=res.data.serviceLabel
                       if(res.data.serviceLabel!=null){
-                            if(res.data.serviceLabel.length>4){
-                            this.label=res.data.serviceLabel.slice(0,4)
+                           let label=res.data.serviceLabel.filter((data)=>{
+                                if(data!=''){
+                                    return data
+                                }
+                          })
+                            if(label.length>4){
+                            this.label=label.slice(0,4)
                             }else{
-                           this.label=res.data.serviceLabel
+                           this.label=label
                             }
                         }
                        wx.setNavigationBarTitle({
@@ -238,10 +248,15 @@ export default {
                     this.label=res.data.dealerLabel
                     this.brandName=res.data.dealer.name
                       if(res.data.dealerLabel!=null){
-                            if(res.data.dealerLabel.length>4){
-                            this.label=res.data.dealerLabel.slice(0,4)
+                          let label=res.data.dealerLabel.filter((data)=>{
+                                if(data!=''){
+                                    return data
+                                }
+                          })
+                            if(label.length>4){
+                            this.label=label.slice(0,4)
                             }else{
-                           this.label=res.data.dealerLabel
+                           this.label=label
                             }
                         }
                        wx.setNavigationBarTitle({

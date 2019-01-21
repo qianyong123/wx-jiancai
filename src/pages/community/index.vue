@@ -214,8 +214,11 @@ export default {
         if(res.code==200&&res.data!=null){
           let list= res.data.list
               list.forEach((data2,index)=>{  
-                      
-                list[index].label=data2.label.split(',')            
+                 if(data2.label!=null&&data2.label!=''){
+                  list[index].label=data2.label.split(',')            
+                 } else{
+                     list[index].labe=[]
+                 }   
             })  
             this.houseList=this.houseList.concat(list)
             this.pageNum=this.pageNum+1
