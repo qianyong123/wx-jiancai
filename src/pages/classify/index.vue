@@ -81,6 +81,7 @@ export default {
       this.classiifyList=[]
       this.pageNum=1
       console.log('type',this.type)
+      console.log('pageNum', this.pageNum)
     }
   },
   onLoad(){
@@ -97,6 +98,8 @@ export default {
    //切换分类类型
    types(index){
      this.type=index
+      this.pageNum=1
+      this.classiifyList=[]
      this.classSorts()
    },
    //点击商品跳转到搜索页面
@@ -125,11 +128,11 @@ export default {
         console.log('建材馆列表',res)
         if(res.code==200&&res.data!=null){
           let list=res.data.list
-            if(this.type==2||this.type==3){
-              list.forEach((data2,index)=>{
-                list[index].logoImg=data2.logoUrl
-              })
-            }
+            // if(this.type==1||this.type==2||this.type==3){
+            //   list.forEach((data2,index)=>{
+            //     list[index].logoImg=data2.logoUrl
+            //   })
+            // }
             this.classiifyList= this.classiifyList.concat(list)
             this.total=res.data.total
             this.pageNum=this.pageNum+1      

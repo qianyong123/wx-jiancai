@@ -1,6 +1,10 @@
 <template>
   <div class="my" >
-      <div class="my-top">
+      <!-- 需要使用 button 来授权登录 -->
+      <div v-if="userInfo==null" class="my-top">
+        <button open-type="getUserInfo" @getuserinfo="bindGetUserInfo">获取头像</button>
+      </div>
+      <div v-else class="my-top">
           <div class="myImg">
               <img :src="userInfo.avatarUrl" alt="">
           </div>
@@ -23,11 +27,11 @@ export default {
   data () {
     return {
       motto: 'Hello World',
-      userInfo: {},
+      userInfo:null,
       list:[
         {id:1,name:'申请成为入驻商',imgUrl:'/static/Icon/shang.png'},
         {id:2,name:'我的关注',imgUrl:'/static/Icon/my2.png'},
-        // {id:3,name:'我的拼团',imgUrl:'/static/Icon/spell1.png'},
+        {id:3,name:'我的拼团',imgUrl:'/static/Icon/spell1.png'},
       ]
     }
   },
@@ -36,20 +40,32 @@ export default {
     
   },
   onLoad(){
+    let userInfo= wx.getStorageSync('userInfo')
+    if(userInfo){
+      this.userInfo=userInfo
+    }
       // 调用登录接口avatarUrl nickName
-      wx.login({
-        success: (res1) => {
-          // console.log('code',res1)
-          wx.getUserInfo({
-            success: (res) => {
-               console.log('user',res)
-              this.userInfo = res.userInfo         
-            }
-          })
-        }
-      })
+      // wx.login({
+      //   success: (res1) => {
+      //     // console.log('code',res1)
+      //     wx.getUserInfo({
+      //       success: (res) => {
+      //          console.log('user',res)
+      //         this.userInfo = res.userInfo         
+      //       }
+      //     })
+      //   }
+      // })
+      
   },
   methods: {
+    bindGetUserInfo(e){
+      console.log('用户信息',e)
+      if(e.mp.detail.userInfo){
+        this.userInfo=e.mp.detail.userInfo
+        wx.setStorageSync('userInfo',e.mp.detail)
+      }
+    },
     myMessge(id){
       if(id==1){
         wx.navigateTo({

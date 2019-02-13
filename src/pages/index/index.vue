@@ -79,6 +79,7 @@ export default {
         // {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'1452',pay:'1'},
         ],
       value:'',
+      code:'',
       current: '1',
       current_scroll: '0',
       pageNum:1,
@@ -109,7 +110,22 @@ export default {
     if(this.openId!=''){
       this.commList=[]
       this.indexList()
+    }else{
+        let user= wx.getStorageSync('userInfo')
+        if(user){
+          this.userInfo=user.userInfo
+          userInfo(
+            {code:this.code,encryptedData:user.encryptedData,iv:user.iv}
+          ).then(res=>{
+            console.log('用户id',res)
+            if(res.code==200&&res.data!=null){
+              wx.setStorageSync('openId',res.data.openId)
+              this.openId=res.data.openId         
+            }
+          })
+        }
     }
+  
   },
   methods: {
     indexList(){
@@ -125,7 +141,13 @@ export default {
         }).then(res=>{
           console.log('商品列表',res)   
               if(res.code==200&&res.data!=null){
-                this.commList=this.commList.concat(res.data.list)  
+                let list=res.data.list
+                list.forEach((data,index)=>{
+                  if(data.description.length>20){
+                    list[index].description=data.description.slice(0,20)+'...'
+                  }
+                })
+                this.commList=this.commList.concat(list)  
                  this.total=res.data.total
                  this.pageNum=this.pageNum+1
               }
@@ -167,16 +189,25 @@ export default {
     },
     //获取用户id
      getUserInfos () {
-      // 调用登录接口
+        // 调用登录接口
       wx.login({
         success: (res1) => {
-          // console.log('code',res1)
-          wx.getUserInfo({
+          console.log('code',res1)
+          this.code=res1.code        
+        }
+      })
+        wx.getSetting({
+        success:(res2)=>{
+          console.log('授权',res2)
+        if (res2.authSetting['scope.userInfo']) {
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+           wx.getUserInfo({
             success: (res) => {
-              // console.log('user',res)openId
+              console.log('user',res)
               this.userInfo = res.userInfo
+                wx.setStorageSync('userInfo',res.userInfo)
               userInfo(
-                {code:res1.code,encryptedData:res.encryptedData,iv:res.iv}
+                {code:this.code,encryptedData:res.encryptedData,iv:res.iv}
               ).then(res=>{
                 console.log('用户id',res)
                 if(res.code==200&&res.data!=null){
@@ -187,8 +218,12 @@ export default {
               })
             }
           })
+        }else{         
+           this.indexList()
         }
-      })
+      }
+    })
+     
     },
     //切换热门产品
        handleChangeScroll (e) {      

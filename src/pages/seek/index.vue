@@ -442,6 +442,7 @@ export default {
       }).then(res=>{
         console.log('分类商品列表',res)
         if(res.code==200&&res.data!=null){
+           
             this.commList=this.commList.concat(res.data.list) 
              this.total=res.data.total
              this.pageNum=this.pageNum+1          
@@ -464,7 +465,15 @@ export default {
       }).then(res=>{
         console.log('主页搜索商品',res)
         if(res.code==200&&res.data!=null){
-            this.commList=this.commList.concat(res.data.list) 
+           let list=res.data.list
+           if(this.oncommType==1){
+                list.forEach((data,index)=>{
+                  if(data.description.length>20){
+                    list[index].description=data.description.slice(0,20)+'...'
+                  }
+                })
+           }             
+            this.commList=this.commList.concat(list) 
              this.total=res.data.total
              this.pageNum=this.pageNum+1       
               this.noProduct=false

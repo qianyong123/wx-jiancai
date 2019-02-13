@@ -104,12 +104,15 @@ export default {
         position: relative;
         width: 70px;
         height: 70px;
+        background: #ccc;
+        border-radius:4px;
         img{
           position: absolute;
           top: 0;
           left: 0;
           height: 100%;
           width: 100%;
+          border-radius:4px;
         }
       }
       .detail{

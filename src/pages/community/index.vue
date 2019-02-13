@@ -20,8 +20,20 @@
           <div v-if="noProduct" class="noProduct">亲，没有更多了！</div>
       </div>
       <div v-else class="community-house">
-          <div class="community-sousuo">
+          <div class="community-sousuo">       
               <div class="sousuo-input">
+                <!-- <div class="sousuo-left" @click="ismapList=true">
+                  <span>{{mapName}}</span>
+                  <span class="icon2"></span>
+                             
+                </div> -->
+                
+                <picker class="sousuo-left" @change="bindPickerChange" :value="index" :range="mapList">
+                    <view class="picker">
+                      <span>{{mapList[index]}}</span>
+                      <span class="icon2"></span>
+                    </view>
+                </picker>                
                 <i-icon class="icon" type="search" size="18" color="#BBBBAA"/>
                 <input 
                 v-model="input"       
@@ -30,6 +42,7 @@
                 confirm-type='search' 
                 placeholder-style="color:#BBBBAA;"
                 placeholder="请输入楼盘名" />
+               
             </div>
             <div class="seetResult">
               <div class="div" v-for="comm in filterList" :key="comm.id">
@@ -41,17 +54,26 @@
               </div>
               <div class="zhList" v-if="isFilter1=='1'">
                   <div class="zh-item"
+                  v-for="(item,index) in mapList"
+                  @click="filteritem1(index)"
+                  :key="index">
+                      <span :class="{zhColor:isFilterType==index}">{{item}}</span>
+                      <i-icon v-if="isFilterType==index" type="right" size="18" color="#1DB389"/>
+                  </div>
+              </div>
+              <div class="zhList" v-if="isFilter1=='2'">
+                  <div class="zh-item"
                   v-for="item in Filter1"
-                  @click="filteritem(item.id)"
+                  @click="filteritem2(item.id)"
                   :key="item.id">
                       <span :class="{zhColor:isFilter1Type==item.id}">{{item.name}}</span>
                       <i-icon v-if="isFilter1Type==item.id" type="right" size="18" color="#1DB389"/>
                   </div>
               </div>
-              <div class="zhList" v-if="isFilter1=='2'">
+              <div class="zhList" v-if="isFilter1=='3'">
                   <div class="zh-item"
                   v-for="item in Filter2"
-                  @click="filteritem2(item.id)"
+                  @click="filteritem3(item.id)"
                   :key="item.id">
                       <span :class="{zhColor:isFilter2Type==item.id}">{{item.name}}</span>
                       <i-icon v-if="isFilter2Type==item.id" type="right" size="18" color="#1DB389"/>
@@ -73,7 +95,7 @@
 </template>
 
 <script>
-import {articleList,houseList} from '../../utils/api.js'
+import {articleList,houseList,getRegionName} from '../../utils/api.js'
 import forum  from './forum '
 import house  from './house'
 export default {
@@ -88,6 +110,17 @@ export default {
         // {id:1,title:'官方发布',content:'城市大部分普通小区中顶层复式有什么弊端？',readCount:'1458'},
         // {id:2,title:'官方发布',content:'城市大部分普通小区中顶层复式有什么弊端？',readCount:'1458'},      
       ],
+       mapName:'宜兴',
+       ismapList:false,
+       index:0,
+      mapList:[  
+                 
+      ],
+       mapList2:[         
+        {id:11,name:'宜兴'},
+        {id:12,name:'武侯'},
+        {id:13,name:'成都'},     
+      ],
       types:0,
       input:'',
        type:[
@@ -95,8 +128,9 @@ export default {
         {id:1,name:'房价'},
       ],
       filterList:[
-        {id:1,name:'价格'},
-        {id:2,name:'筛选'},
+        {id:1,name:'区域'},
+        {id:2,name:'价格'},
+        {id:3,name:'筛选'},
       ],
       Filter1:[
         {id:0,name:'从低到高'},
@@ -111,6 +145,7 @@ export default {
       resultType:null,
       isFilter1:'',
       // isFilter2:'',
+      isFilterType:null,
       isFilter1Type:null,
       isFilter2Type:null,
       pageNum:1,
@@ -121,7 +156,8 @@ export default {
       down:'',
       floorPrice:'',
       highestPrice:'',
-      up:''
+      up:'',
+      region:'',
     }
   },
 
@@ -132,6 +168,15 @@ export default {
   onLoad(){
     //文章列表
    this.articleLists()
+   //区域
+   getRegionName().then(res=>{
+     console.log('区域',res)
+     if(res.code==200&&res.data!=null){
+       this.mapList=res.data
+       let list=res.data
+      
+     }
+   })
   },
   // onShow(){
   //   this.input=''
@@ -148,6 +193,7 @@ export default {
     houseData(){
       this.houseList=[]
       this.pageNum=1
+      console.log(this.houseData)
     }
 
   },
@@ -201,6 +247,7 @@ export default {
     //筛选小区
     fliterPrice(){
         houseList({
+        region:this.mapList[this.region],
         pageNum:this.pageNum,
         pageSize:this.pageSize,
         price:this.isFilter1Type,
@@ -253,10 +300,24 @@ export default {
       // console.log(e)
       this.input=e.target.value
     },
+    //选择区域
+     bindPickerChange(e){
+        console.log(e)
+        this.index=e.target.value
+    },
+    //隐藏综合list
+    hidezhlist(){
+      this.iszhList=''
+    },
+    onMap(name){
+      this.mapName=name
+      this.ismapList=false
+    },
     //确定搜素
     seeks(){
         console.log('搜索')
         this.houseList=[]
+        this.region=this.index
         this.fliterPrice()
         this.houseData=0
     },
@@ -265,8 +326,16 @@ export default {
       this.resultType=id
       this.isFilter1=id
     },
+     //区域筛选
+    filteritem1(id){
+        this.isFilterType=id
+        this.region=id
+        this.isFilter1=''
+        this.houseData=id+10
+        this.fliterPrice()    
+    },
     //价格房价
-    filteritem(id){
+    filteritem2(id){
         this.isFilter1Type=id
         this.isFilter1=''
         if(id==0){
@@ -277,7 +346,8 @@ export default {
             this.fliterPrice()
         }
     },
-    filteritem2(id){
+    //筛选价格
+    filteritem3(id){
         this.isFilter2Type=id
         this.isFilter1=''
         if(id==0){
@@ -385,6 +455,7 @@ export default {
         background: #fff;
         position: relative;
         z-index: 666;
+         
       }
       .sousuo-input{
           width: 335px;
@@ -396,17 +467,58 @@ export default {
           color: #BBBBAA;
           font-size: 14px;
           border: 1px solid #F8F8FA;
-          border-radius: 20px;      
+          border-radius: 20px;  
+          position: relative;    
           .icon{
-            margin:0 10px;
-          }      
+            margin:0 10px 0 20px;
+          }  
+          .sousuo-left{
+            // min-width:50px;
+            height:20px;
+            border-right: 1px solid #C8C8C9;      
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding:0 15px;
+            .icon2{         
+                display: inline-block;     
+                  height: 0;
+                  width: 0;
+                  border-top: 6px solid #C8C8C9;
+                  /*此处将左右的边框设置为透明色*/
+                  border-right: 6px solid transparent ; 
+                  border-left: 6px solid transparent;             
+                  margin-left:5px;
+                  // position: absolute;
+                  // top: 9px;
+                  // right: 15px;
+            }
+          } 
+          .seek-ul{
+            position: absolute;
+            top: 39px;
+            left:-1px;
+            border: 1px solid #ccc;
+            border-top: 0;
+            z-index: 200;
+            background: #fff;
+            li{
+              width: 75px;
+              height:30px;
+              text-align: center;
+              border-bottom:  1px solid #ccc;
+              line-height: 30px;
+
+            }
+          }   
         }
         .seetResult{
           height:48px;
           width: 100%;
-          padding:0 50px;
+          // padding:0 50px;
           display: flex;
-          border-bottom:1px solid #BBBBAA;
+          border-bottom:1px solid rgba(242, 242, 242, 1);
           color: $fontSizeColor;
           position: relative;
         
@@ -424,7 +536,7 @@ export default {
                 display: inline-block;     
                   height: 0;
                   width: 0;
-                  border-top: 6px solid $fontSizeColor;
+                  border-top: 6px solid rgba(242, 242, 242, 1);
                   /*此处将左右的边框设置为透明色*/
                   border-right: 6px solid transparent ; 
                   border-left: 6px solid transparent;

@@ -81,6 +81,10 @@ export const houseList=(data)=>{
     wx.showLoading({title: '加载中...'})
     return request.request(`/house/list`, qs.stringify(data),{method:'get',})
 }
+//社区房价区域
+export const getRegionName=(data)=>{
+    return request.request(`/house/getRegionName`, qs.stringify(data),{method:'get',})
+}
 //小区详情
 export const houseDtail=(data)=>{
     wx.showLoading({title: '加载中...'})

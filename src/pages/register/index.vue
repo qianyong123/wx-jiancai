@@ -4,7 +4,10 @@
        <div class="text">
          <div>入驻类型</div>
          <div>
-           <input v-model="input1" placeholder="入驻类型" focus />
+           <!-- <input v-model="input1" placeholder="入驻类型" focus /> -->
+             <picker @change="bindPickerChange" :value="index" :range="array">
+              <view class="picker">当前选择：{{array[index]}}</view>
+            </picker>
          </div>
        </div>
        <div class="text">
@@ -49,6 +52,13 @@ export default {
     return {
       motto: 'Hello World',
       userInfo: {},
+      array:[
+        '建材公司',
+        '设计公司',
+        '服务公司',
+        '经销商',
+      ],
+      index:'0',
       input1:'',
       input2:'',
       input3:'',
@@ -70,11 +80,15 @@ export default {
   },
 
   methods: {
+    bindPickerChange(e){
+        console.log(e)
+        this.index=e.target.value
+    },
    oNregister(){
-     console.log(this.input1,this.input2,this.input3,this.input4,this.input5,this.input6)
+     console.log(this.input2,this.input3,this.input4,this.input5,this.input6)
      let phone=/^1[34578]\d{9}$/,//手机
         phone2=/0\d{2,4}-\d{7,8}/;//座机
-     if(this.input1==''||this.input2==''||this.input3==''||this.input4==''||this.input5==''||this.input6==''){
+     if(this.input2==''||this.input3==''||this.input4==''||this.input5==''||this.input6==''){
           wx.showToast({
         title: '申请信息不能为空',
         icon: 'none',
@@ -102,7 +116,7 @@ export default {
          companyName:this.input2,
          contact:this.input4,
          contactPhone:this.input5,
-         type:this.input1
+         type:this.array[this.index]
        }).then(res=>{
          console.log('申请成功',res)
          if(res.code==200&&res.msg=='成功'){

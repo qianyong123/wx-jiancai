@@ -6,8 +6,8 @@
         <div class="site">
             <div>
                 <span class="xiaoqu-name">{{houseList.name}}</span>
-                <span v-if="houseList.status==0" class="states">在售</span>
-                <span v-else class="states">未售</span>
+                <!-- <span v-if="houseList.status==0" class="states"></span> -->
+                <span  class="states">{{houseList.status}}</span>
             </div>
             <div class="xiaoqu-site">{{houseList.address}}</div>
             <div>
@@ -61,15 +61,16 @@ props: ['houseList'],
 <style lang="scss" scoped>
 @import '../../style/base.scss';
 .house{
-    width: 100%;
+    width:355px;
     min-height: 120px;
-    padding:0 5px 0 20px;
-    border-bottom:1px solid #BBBBAA;
+    // padding-left:5px;
+    margin-left: 20px;
+    border-bottom:1px solid rgba(242, 242, 242, 1);
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 12px;
-    color: #BBBBAA;
+    color: #cccccc;
     span{
         display: inline-block;
     }
@@ -120,6 +121,8 @@ props: ['houseList'],
         width: 100px;
         height: 40px;
         overflow: hidden;
+        text-align: right;
+        padding-right: 10px;
         .price{
             font-size: 14px;
             color: #f00;

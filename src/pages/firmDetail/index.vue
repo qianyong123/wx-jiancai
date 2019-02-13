@@ -1,13 +1,12 @@
 <template>
   <div class="firmDetail" >
       <div class="banner">
-
         <img class="bannerImg" :src="dealer.backgroundImgUrl" alt="">
           <div class="firmDetail-phone">
             <div class="product">
               <div class="product-box">
                   <div class="logo">
-                      <img :src="dealer.brandLogo" alt="">
+                      <img :src="dealer.logoUrl" alt="">
                   </div>
                   <div class="nameBox">
                       <div>
@@ -54,9 +53,9 @@
           <div class="brandDetail">品牌介绍</div>
           <div>
             <div class="item-img brandLogo">
-                <img :src="data.dealer.brandLogo" alt="">
+                <img :src="dealer.logoUrl" alt="">
             </div>
-            <div class="brand-details">{{data.dealer.brandDescription}}</div>
+            <div class="brand-details">{{dealer.brandDescription}}</div>
           </div>
       </div>
 

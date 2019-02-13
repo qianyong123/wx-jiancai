@@ -3,26 +3,39 @@
       <div class="imgBanner">
         <img :src="product.imgUrl" alt="">
           <div class="spell">
-              <div class="spellImg">
+            <div class="spell2">
+                <div class="spellImg">
                   <div>
                     <img src="/static/Icon/spell4.png" alt="">
                   </div>
                   <div>5人团</div>
-              </div>             
-              <div style="font-weight: 600;">2/5开团</div>
-          </div>
+                </div>             
+                <div style="font-weight: 600;">2/5开团</div>
+            </div>
+            <div class="spellTime">
+              <p>距离拼团结束还剩：</p>
+              <p style="margin-top:8px;">
+                  <span style="margin-right:3px">1</span>
+                  天
+                  <span style="margin-left:3px">20</span>：
+                  <span>20</span>：
+                  <span>30</span>
+              </p>
+            </div>
+          </div>        
       </div>
       <div class="state">
           <div class="state-name">{{product.name}}</div>
-          <!-- <div class="attention">
+          <div v-if="isattentions==1" class="attention" @click="attentions(2)">
               <img src="/static/Icon/myspell1.png" alt="">
               <span>关注</span>
-          </div> -->
-          <!-- <div class="attention">
+          </div>
+          <div @click="attentions(1)" v-else class="attention">
               <img src="/static/Icon/myspell2.png" alt="">
               <span>已关注</span>
-          </div> -->
+          </div>
       </div>
+      <div class="songyang">免费送样</div>
       <div class="bcg"></div>
       <div class="pinpai">
           <div class="pinpai-box"> 
@@ -35,7 +48,7 @@
           </div>
           <div class="pinpai-box">  
               <span class="title">重量</span>
-              <span>{{product.weight}}</span>
+              <span>{{product.weight}}kg</span>
           </div>
       </div>
       <div class="bcg"></div>
@@ -98,6 +111,7 @@ export default {
   data () {
     return {
       visible1:false,
+      isattentions:1,
       title:'',
       input:'',
       modalTiele1:'',
@@ -146,6 +160,10 @@ export default {
       else if(id==3){
         this.modalTiele1='立即拼团'
       }
+    },
+    attentions(id){
+      console.log(id)
+      this.isattentions=id
     },
     handleClose1(index){
       let phone=/^1[34578]\d{9}$/ //手机
@@ -212,6 +230,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../style/base.scss';
 .details{
     width:100%;
     height: 100%;
@@ -246,8 +265,29 @@ export default {
         padding: 10px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         color: #fff;
         font-size: 16px;
+        .spell2{
+          min-width: 90px;
+          height: 55px;
+          display: flex;
+          align-items: center;
+        }
+        .spellTime{
+          font-size: 12px;
+          min-width: 130px;
+          text-align: center;
+          span{
+            display: inline-block;
+            width: 21px;
+            height: 18px;
+            text-align: center;
+            line-height: 18px;
+            background: #fff;
+            color: $color;
+          }
+        }
         .spellImg{
             width: 90px;
             display: flex;
@@ -310,6 +350,19 @@ export default {
           margin-right: 5px;
         }
       }
+    }
+    .songyang{
+      width: 60px;
+      height: 20px;
+      text-align: center;
+      line-height: 20px;
+      border: 1px solid #FFDB63;
+      color: #FFDB63;
+      font-size: 12px;
+      // padding:2px 5px;
+      margin-left: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
     }
     .pinpai{
       width: 100%;

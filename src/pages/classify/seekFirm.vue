@@ -3,7 +3,7 @@
   <div  class="seekFirm-items" v-for="(item, index) in commList" :key="index" @click="fimrDetails(item)">
     <div class="seek-logo">
         <div class="item-img">
-            <img :src="item.logoImg" alt="">
+            <img :src="item.logoUrl" alt="">
         </div>
         <div class="item-name">
             <div class="name">
