@@ -26,11 +26,11 @@
       </div>
       <div class="state">
           <div class="state-name">{{product.name}}</div>
-          <div v-if="isattentions==1" class="attention" @click="attentions(2)">
+          <div v-if="product.flag==1" class="attention" @click="attentions(product.flag)">
               <img src="/static/Icon/myspell1.png" alt="">
               <span>关注</span>
           </div>
-          <div @click="attentions(1)" v-else class="attention">
+          <div @click="attentions(product.flag)" v-else class="attention">
               <img src="/static/Icon/myspell2.png" alt="">
               <span>已关注</span>
           </div>
@@ -48,7 +48,7 @@
           </div>
           <div class="pinpai-box">  
               <span class="title">重量</span>
-              <span>{{product.weight}}kg</span>
+              <span>{{product.weight}}</span>
           </div>
       </div>
       <div class="bcg"></div>
@@ -59,7 +59,7 @@
             </div>
             <div class="nameBox">
                 <div>
-                    <span class="product-name">{{dealer.brandName}}</span>
+                    <span class="product-name">{{dealer.name}}</span>
                     <span class="merchant">总经销商</span>
                 </div>
                 <div>
@@ -105,13 +105,14 @@
 </template>
 
 <script>
-import {getData,productDetail} from '../../utils/api.js'
+import {getData,productDetail,productAttention} from '../../utils/api.js'
 
 export default {
   data () {
     return {
       visible1:false,
       isattentions:1,
+      openId:'',
       title:'',
       input:'',
       modalTiele1:'',
@@ -128,11 +129,15 @@ export default {
     
   },
  onLoad(){
-       let data=this.$root.$mp.query
+      let data=this.$root.$mp.query
       this.data=data
+      let openId=wx.getStorageSync('openId')
+      if(openId){
+          this.openId=openId
+      }
       console.log(data)
       if(data.id){
-          getData(`/product/detail/${data.id}`).then(res=>{
+          getData(`/product/detail`,{id:data.id,openId:this.openId}).then(res=>{
           console.log('商品详情',res)
           if(res.code==200&&res.data!=null){
                 this.product=res.data.product
@@ -161,9 +166,17 @@ export default {
         this.modalTiele1='立即拼团'
       }
     },
+    //关注
     attentions(id){
       console.log(id)
-      this.isattentions=id
+       this.product.flag=id==0?1:0
+      productAttention({
+        flag:id==0?1:0,
+        id:this.data.id,
+        openId :this.openId 
+      }).then(res=>{
+        console.log('关注',res)
+      })
     },
     handleClose1(index){
       let phone=/^1[34578]\d{9}$/ //手机
@@ -187,6 +200,8 @@ export default {
               businessPhone:this.dealer.phone,
               name:this.product.name,
               phone:this.input,
+              openId:this.openId,
+              productId:this.data.id,
               type:'建材-'+`${this.modalTiele1}`
             }).then(res=>{
               console.log('登记信息',res)

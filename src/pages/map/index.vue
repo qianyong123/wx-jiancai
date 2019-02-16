@@ -5,7 +5,7 @@
         id="map"
         :longitude="markers[0].longitude"
         :latitude="markers[0].latitude"
-        scale="16"
+        scale="14"
         :markers="markers"
         @markertap="markertap"
         show-location

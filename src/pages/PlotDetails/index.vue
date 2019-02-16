@@ -2,9 +2,8 @@
   <div class="PlotDetails" >
       <div class="PlotDetails-top">
           <span>{{data.name}}</span>
-          <span v-if="data.status==0">在售</span>
-          <span v-else>未售</span>
-          <span v-for="(item,index) in label" :key="index">{{item}}</span>
+          <span>{{data.status}}</span>         
+          <span class="span2" v-for="(item,index) in label" :key="index">{{item}}</span>
       </div>
       <div class="PlotDetails-banner">
         <img :src="data.imgUrl" alt="">
@@ -167,13 +166,15 @@ export default {
             border-radius: 2px;
             margin:0 10px;
         }
-         span:nth-child(3){
-            padding:1px 5px;
+        .span2{
+           padding:1px 5px;
             font-size: 12px;
             background: #FFF0EB;
             color: #FF6633;
             border-radius: 2px;
+            margin-left:5px;
         }
+        
     }
     .PlotDetails-banner{
       width: 100%;
@@ -287,7 +288,7 @@ export default {
                 margin-right: 10px;
                 border-radius: 3px;
               }
-            }
+            }         
             div:nth-child(4){
               font-size:18px;
               font-weight: 600;

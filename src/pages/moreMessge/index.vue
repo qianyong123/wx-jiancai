@@ -12,8 +12,7 @@
        <div class="bcg"></div>
        <div class="text">
          <div>楼盘状态</div>
-         <div v-if="data.status==0">在售</div>
-         <div v-else>未售</div>
+         <div>{{data.status}}</div>
        </div>
        <div class="text">
          <div>参考均价</div>

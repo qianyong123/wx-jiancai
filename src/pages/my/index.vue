@@ -44,26 +44,14 @@ export default {
     if(userInfo){
       this.userInfo=userInfo
     }
-      // 调用登录接口avatarUrl nickName
-      // wx.login({
-      //   success: (res1) => {
-      //     // console.log('code',res1)
-      //     wx.getUserInfo({
-      //       success: (res) => {
-      //          console.log('user',res)
-      //         this.userInfo = res.userInfo         
-      //       }
-      //     })
-      //   }
-      // })
-      
+         
   },
   methods: {
     bindGetUserInfo(e){
       console.log('用户信息',e)
       if(e.mp.detail.userInfo){
         this.userInfo=e.mp.detail.userInfo
-        wx.setStorageSync('userInfo',e.mp.detail)
+        wx.setStorageSync('userInfo',e.mp.detail.userInfo)
       }
     },
     myMessge(id){

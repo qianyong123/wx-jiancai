@@ -3,6 +3,8 @@ const request=new Fly()
 // 配置请求基地址
 // request.config.baseURL =` http://94.191.13.156:8080/api`
 request.config.baseURL =`http://192.168.2.109:8080/api`
+// request.config.baseURL =`https://iszhangsc.top/api`
+
 
 import qs from 'qs'
 

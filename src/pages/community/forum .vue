@@ -1,7 +1,7 @@
 <template>
   <div class="forum" @click="forumItem(forumList.id)">
       <div class="forum-left">
-          <div class="title">{{forumList.content}}</div>
+          <div class="title">{{forumList.title}}</div>
           <div class="name">
               <div>{{forumList.createBy}}</div>
               <div>{{forumList.readCount}}阅读</div>

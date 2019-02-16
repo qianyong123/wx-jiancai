@@ -2,16 +2,16 @@
   <div class="Myspell" >
       <div class="item" v-for="(item,index) in myList" :key="index" @click="details(item)">
           <div class="imgs">
-            <img src="http://yanxuan.nosdn.127.net/658f09b7ec522d31742b47b914d64338.png" alt="">
+            <img :src="item.imgUrl" alt="">
           </div>
           <div class="detail">
-              <div class="item-text">{{item.text}}</div>
+              <div class="item-text">{{item.description}}</div>
               <div class="item-name">
                   <div>
                       <img src="/static/Icon/user.jpg" alt="">
-                      <span>{{item.name}}</span>
+                      <span>{{item.dealerName}}</span>
                   </div>
-                  <div v-if="item.state==1">
+                  <!-- <div v-if="item.state==1">
                     <img src="/static/Icon/spell1.png" alt="">
                       <span class="phone">{{item.amount}}/5开团</span>
                   </div>
@@ -21,7 +21,7 @@
                   </div>
                   <div v-else-if="item.state==3">
                     <img class="err" src="/static/Icon/spell3.png" alt="">                    
-                  </div>
+                  </div> -->
               </div>
           </div>
       </div>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-
+import {myFight } from '@/utils/api'
 export default {
   data () {
     return {
@@ -61,7 +61,7 @@ export default {
     //查看详情
     details(item){
         wx.navigateTo({
-          url: `../details/main?name=${item.name}&id=${item.id}`
+          url: `../details/main?id=${item.id}`
         })
     }
   },
@@ -69,6 +69,24 @@ export default {
     
   },
   onLoad(){
+    let openId=wx.getStorageSync('openId')
+    if(openId){
+         myFight({openId}).then(res=>{
+          console.log('我的拼团',res)
+          if(res.code==200&&res.data!=null){
+            let list=res.data
+            list.forEach((data,index)=>{
+              if(data==null){
+                  list.splice(index,1)
+              }
+              else if(data.description.length>30){
+                list[index].description=data.description.slice(0,30)+'...'
+              }
+            })
+            this.myList=list
+            }
+        })
+    }
     
   },
    onReachBottom(){

@@ -438,7 +438,8 @@ export default {
       sortProduct({
         name:data.name,
         pageNum:this.pageNum,
-        pageSize:this.pageSize
+        pageSize:this.pageSize,
+        openId:this.openId
       }).then(res=>{
         console.log('分类商品列表',res)
         if(res.code==200&&res.data!=null){
@@ -456,6 +457,7 @@ export default {
         pageSize:this.pageSize,
         type:this.oncommType-1,
         keyword:this.input,
+        openId:this.openId,
         attentionCount:this.attentionCount,
         floorPrice:this.floorPrice,
         highestPrice:this.highestPrice,
@@ -486,6 +488,8 @@ export default {
       console.log(item.name)
       this.brand=item.name
       this.dataType=4
+      this.commList=[]
+      this.pageNum=1  
       this.showRight1=false
       this.productFliter()
     },
@@ -504,7 +508,8 @@ export default {
     chooseClick(){
       console.log('筛选')
       this.dataType=5
-      console.log(this.filterInput1,this.filterInput2)
+      this.commList=[]
+      this.pageNum=1     
       this.showRight2=false
       this.productFliter()
     },
@@ -546,13 +551,10 @@ export default {
     seeks(){
       console.log('搜索',this.input)  
       this.commList=[]
-      if(this.oncommType==1){
-        this.dataType=1
+    
+        this.dataType=this.oncommType+11
         this.productFliter()          
-      }else{
-        this.dataType=7
-        this.productFliter2()    
-      }
+      
         this.isresult=false
         if(this.oncommType=='1'&&this.input!=''){
           let index=this.materials[0].indexOf(this.input)
@@ -616,26 +618,6 @@ export default {
               this.toggright1s2();
           }
     },
-    //关注排序
-    searchType2(){
-        
-    },
-    //新品排序
-    searchType3(){
-        searchType({
-            pageNum:this.pageNum,
-            pageSize:this.pageSize,
-            type:this.oncommType-1,
-            newProduct:'0',
-            }).then(res=>{
-          console.log('新品排序',res)
-          if(res.code==200&&res.data!=null){
-             this.commList=this.commList.concat(res.data.list)
-                this.total=res.data.total
-                this.pageNum=this.pageNum+1
-          }
-        })
-    },
     //点击综合里面的item
     zhitem(id){
         this.zhtype=id
@@ -661,12 +643,9 @@ export default {
     historyNmae(item){
         this.isresult=false
         this.input=item
-        searchType({pageNum:this.pageNum,pageSize:this.pageSize,type:this.oncommType-1,keyword:this.input}).then(res=>{
-        console.log('主页搜索商品',res)
-        if(res.code==200&&res.data!=null){
-            this.commList=res.data.list
-        }
-      })
+        this.commList=[]
+         this.dataType=36
+        this.productFliter()
     },
     // 产品索引
     onChange(event){

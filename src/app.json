@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/main",
+    "pages/accredit/main",
     "pages/classify/main",
     "pages/my/main",
     "pages/seek/main",

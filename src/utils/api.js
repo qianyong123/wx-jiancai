@@ -12,7 +12,11 @@ export const userInfo=(data)=>{
 //商品列表
 export const commodityList=(data)=>{
     wx.showLoading({title: '加载中...'})
-       return request.request(`/product/applets/list`, qs.stringify(data),{method:'get',headers:{nihao:'afsfs'}})
+       return request.request(`/product/applets/list`, qs.stringify(data),{method:'get'})
+   }
+   //热门商品导航
+export const findProductType=(data)=>{
+    return request.request(`/dictionary/findProductType`, qs.stringify(data),{method:'get'})
    }
 //banner
 export const indexBanner=(data)=>{
@@ -96,6 +100,11 @@ export const houseDtail=(data)=>{
 export const myAttention=(data)=>{
     wx.showLoading({title: '加载中...'})
     return request.request(`/user/myAttention`, qs.stringify(data),{method:'get',})
+}
+//我的拼团 openId /incomingInformation/save
+export const myFight=(data)=>{
+    wx.showLoading({title: '加载中...'})
+    return request.request(`/user/myFight`, qs.stringify(data),{method:'get',})
 }
 //申请入驻
 export const applyEnter=(data)=>{

@@ -9,7 +9,7 @@
               <div class="item-name">
                   <div>
                       <img src="/static/Icon/user.jpg" alt="">
-                      <span>{{item.brand}}</span>
+                      <span>{{item.dealerName}}</span>
                   </div>
                   <div @click.stop="PhoneCall(item.phone)">
                     <img src="/static/Icon/phone2.png" alt="">
@@ -49,7 +49,7 @@ export default {
     //查看详情
     details(item){
         wx.navigateTo({
-          url: `../details/main?name=${item.name}&id=${item.id}`
+          url: `../details/main?id=${item.id}`
         })
     }
   },
@@ -62,8 +62,17 @@ export default {
       openId
     }).then(res=>{
       console.log('我的关注',res)
-      if(res.code==200&&res.data!=null){
-          this.myList=res.data
+      if(res.code==200&&res.data!=null){         
+          let list=res.data
+          list.forEach((data,index)=>{
+            if(data==null){
+                list.splice(index,1)
+              }
+            else if(data.description.length>30){
+              list[index].description=data.description.slice(0,30)+'...'
+            }
+          })
+          this.myList=list
       }
     })
   },

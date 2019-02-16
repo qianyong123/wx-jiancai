@@ -316,8 +316,9 @@ export default {
     //确定搜素
     seeks(){
         console.log('搜索')
+        let index=this.index
         this.houseList=[]
-        this.region=this.index
+        this.region=index
         this.fliterPrice()
         this.houseData=0
     },

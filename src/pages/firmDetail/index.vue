@@ -162,7 +162,8 @@ export default {
       data:{},
       data2:{},
       typeNmae:'',
-      brandName:''
+      brandName:'',
+      openId:''
     }
   },
 
@@ -173,6 +174,10 @@ export default {
       
   },
  onLoad(){
+   let openId=wx.getStorageSync('openId')
+    if(openId){
+        this.openId=openId
+    }
     let data=this.$root.$mp.query
     if(data.type){
         this.detailType=data.type
@@ -303,6 +308,8 @@ export default {
             businessPhone:this.data.dealer.phone,
             name: this.brandName,
             phone:this.input,
+            openId:this.openId,
+            productId:this.dealer.id,
             type:`${this.typeNmae}-${this.modalTiele1}`
             }).then(res=>{
                 console.log('登记信息',res)

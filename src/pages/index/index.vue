@@ -20,11 +20,11 @@
           <i-tab
             key="0"
             title="热销产品"
-             @click="changName('')"></i-tab>  
+             @click="changName('',0,0)"></i-tab>  
             <i-tab
             v-for="tab in tabsList"
             :key="tab.id"
-            @click="changName(tab.name)"
+            @click="changName(tab.name,1,tab.id)"
             :title="tab.name"></i-tab>          
         </i-tabs>
     </div>
@@ -47,7 +47,8 @@ import {
   userInfo,
   commodityList,
   indexBanner,
-  productAttention
+  productAttention,
+  findProductType
   } from '../../utils/api.js'
 import item from '@/components/item'
 import card from '@/components/card'
@@ -82,6 +83,7 @@ export default {
       code:'',
       current: '1',
       current_scroll: '0',
+      isHot:0,
       pageNum:1,
       pageSize:10,
       name:'',
@@ -97,34 +99,54 @@ export default {
      console.log('首页2')    
   },
   onLoad () {
+    this.commList=[]
     this.getUserInfos();
+    // let userInfo=wx.getStorageSync('userInfo')
+    // if(userInfo){
+    //       this.userInfo=userInfo
+    // }
     //首页banner
     indexBanner().then(res=>{
       console.log('banner',res)   
       if(res.code==200&&res.data!=null){
-          this.indexBanner=res.data.imgUrl  
+          this.indexBanner=res.data 
+      }
+    })
+    findProductType().then(res=>{
+      console.log('热门商品导航',res)
+      if(res.code==200&&res.data!=null){
+          this.tabsList=res.data
       }
     })
   },
   onShow(){
+    this.commList=[]
     if(this.openId!=''){
-      this.commList=[]
       this.indexList()
-    }else{
-        let user= wx.getStorageSync('userInfo')
-        if(user){
-          this.userInfo=user.userInfo
-          userInfo(
-            {code:this.code,encryptedData:user.encryptedData,iv:user.iv}
-          ).then(res=>{
-            console.log('用户id',res)
-            if(res.code==200&&res.data!=null){
-              wx.setStorageSync('openId',res.data.openId)
-              this.openId=res.data.openId         
-            }
-          })
-        }
-    }
+     }else{
+      let openId=wx.getStorageSync('openId') 
+      if(openId){
+        this.openId=openId
+        this.indexList() 
+        console.log('1')
+      } 
+      
+     }
+    // else{
+    // //     let user= wx.getStorageSync('userInfo')
+    // //     if(user){
+    // //       this.userInfo=user.userInfo
+    // //       userInfo(
+    // //         {code:this.code,encryptedData:user.encryptedData,iv:user.iv}
+    // //       ).then(res=>{
+    // //         console.log('用户id',res)
+    // //         if(res.code==200&&res.data!=null){
+    // //           wx.setStorageSync('openId',res.data.openId)
+    // //           this.openId=res.data.openId         
+    // //         }
+    // //       })
+    // //     }
+    //  }
   
   },
   methods: {
@@ -134,7 +156,8 @@ export default {
         pageNum:this.pageNum,
         pageSize:this.pageSize,
         type:this.name,
-        isHot:this.current_scroll,
+        productType:this.name,
+        isHot:this.isHot,
         // name:this.name,
         // isHotL:this.current_scroll,
         openId:this.openId
@@ -193,48 +216,57 @@ export default {
       wx.login({
         success: (res1) => {
           console.log('code',res1)
-          this.code=res1.code        
+          this.code=res1.code  
+              wx.getSetting({
+              success:(res2)=>{
+                console.log('授权',res2)
+              if (res2.authSetting['scope.userInfo']) {
+                // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+                wx.getUserInfo({
+                  success: (res2) => {
+                    console.log('user',res2)
+                    this.userInfo = res2.userInfo
+                      wx.setStorageSync('userInfo',res2.userInfo)
+                         userInfo(
+                        {code:res1.code,encryptedData:res2.encryptedData,iv:res2.iv}
+                      ).then(res=>{
+                        console.log('用户id',res)
+                        if(res.code==200&&res.data!=null){                    
+                          wx.setStorageSync('openId',res.data.openId)
+                          this.openId=res.data.openId
+                          if(this.commList.length<1){
+                            this.indexList()
+                          }
+                        }
+                      })  
+                  }
+                })
+              }else{         
+                  wx.navigateTo({
+                    url:`../accredit/main`
+                  })
+              }
+            }
+          })  
+          
         }
       })
-        wx.getSetting({
-        success:(res2)=>{
-          console.log('授权',res2)
-        if (res2.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-           wx.getUserInfo({
-            success: (res) => {
-              console.log('user',res)
-              this.userInfo = res.userInfo
-                wx.setStorageSync('userInfo',res.userInfo)
-              userInfo(
-                {code:this.code,encryptedData:res.encryptedData,iv:res.iv}
-              ).then(res=>{
-                console.log('用户id',res)
-                if(res.code==200&&res.data!=null){
-                  wx.setStorageSync('openId',res.data.openId)
-                  this.openId=res.data.openId
-                  this.indexList()
-                }
-              })
-            }
-          })
-        }else{         
-           this.indexList()
-        }
-      }
-    })
+    
      
     },
     //切换热门产品
        handleChangeScroll (e) {      
         this. current_scroll=e.target.key
+        this.pageNum=1
         console.log(e.target)
     },
     //点击热门产品
-    changName(name){
+    changName(name,isHot,id){
+      this. current_scroll=id
         console.log(name)
         this.commList=[]
         this.name=name
+        this.isHot=isHot
         this.noProduct=false
         this.indexList()
     },
@@ -267,7 +299,8 @@ export default {
       this.noProduct=true
       return
     }else{
-        this.indexList()        
+        this.indexList()     
+        console.log('4')   
     }
   },
  
