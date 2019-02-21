@@ -234,7 +234,9 @@ export default {
                         if(res.code==200&&res.data!=null){                    
                           wx.setStorageSync('openId',res.data.openId)
                           this.openId=res.data.openId
+
                           if(this.commList.length<1){
+                            this.commLis=[]
                             this.indexList()
                           }
                         }

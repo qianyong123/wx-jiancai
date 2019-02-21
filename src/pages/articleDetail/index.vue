@@ -11,8 +11,7 @@
             <span class="time">{{data.date}}</span>
           </div>
           <div class="main">
-            <wxParse :content="data.content" />
-            
+            <wxParse :content="data.content" />            
           </div>
         
       </div>

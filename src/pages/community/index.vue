@@ -12,6 +12,7 @@
               <div v-if="types==index" class="border"></div>
           </div>       
       </div>
+      <!-- <div>a</div> -->
       <div v-if="types==0" style="width:100%;height:100%">
             <scroll-view v-if="total>0"  @scrolltolower='loadforum'  scroll-y class="community-forum">
               <forum v-for="(item,index) in forumList" :key="index" :forumList='item' :index='index'></forum>                     
@@ -22,11 +23,6 @@
       <div v-else class="community-house">
           <div class="community-sousuo">       
               <div class="sousuo-input">
-                <!-- <div class="sousuo-left" @click="ismapList=true">
-                  <span>{{mapName}}</span>
-                  <span class="icon2"></span>
-                             
-                </div> -->
                 
                 <picker class="sousuo-left" @change="bindPickerChange" :value="index" :range="mapList">
                     <view class="picker">
@@ -167,7 +163,7 @@ export default {
   },
   onLoad(){
     //文章列表
-   this.articleLists()
+  //  this.articleLists()
    //区域
    getRegionName().then(res=>{
      console.log('区域',res)
@@ -178,11 +174,11 @@ export default {
      }
    })
   },
-  // onShow(){
-  //   this.input=''
-  //   this.types=0
-  //   this.resultType=1
-  // },
+  onShow(){
+    this.forumList=[]
+    this.pageNum=1
+    this.articleLists()
+  },
   watch: {
     types(){
       this.pageNum=1
@@ -441,10 +437,9 @@ export default {
       font-size: 14px;
     }
       .community-forum{
-        margin-top: 20px;
+        padding-top:36px;
         width: 100%;
         height:90%;
-        padding-top: 36px;
         
       } 
     .community-house{
