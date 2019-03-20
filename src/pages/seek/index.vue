@@ -100,10 +100,11 @@
                 <span class="advertising">广告</span> 
               </div>
               <div v-if="hotbrands.length>0" class="hot-brand">
-                <div v-for="item in hotbrands" :key="item.id" @click="onpinpai(item)">
-                    {{item.name}}
+                <div v-for="item in hotbrands" :key="item.id" @click="onpinpai(item.brandName)">
+                    {{item.brandName}}
                 </div>
               </div>
+              
           </div>
          
           <div class="hot-index">
@@ -117,7 +118,7 @@
                     {{item.key}}
                 </div>
                 <div v-for="(item2,index2) in item.list" :key="index2">
-                  <div class="brand-name" @click="onpinpai(item2)">
+                  <div class="brand-name" @click="onpinpai(item2.name)">
                     <div class="imgBox">
                       <img :src="item2.imgUrl" alt="">
                     </div>
@@ -177,7 +178,7 @@ import seekResult from './seekResult'
 import seekFirm from './seekFirm'
 import item from './item'
 import {pinyin} from '../../utils/pinyin.js'
-import {searchType,addFindAll,sortProduct,productAttention} from '../../utils/api.js'
+import {searchType,addFindAll,sortProduct,productAttention,hotBrandList} from '../../utils/api.js'
 export default {
   data () {
     return {
@@ -485,8 +486,8 @@ export default {
     },
     //点击热门品牌
     onpinpai(item){
-      console.log(item.name)
-      this.brand=item.name
+      console.log(item)
+      this.brand=item
       this.dataType=4
       this.commList=[]
       this.pageNum=1  
@@ -613,6 +614,12 @@ export default {
           this.iszhList=id
           if(id==2){
             this.toggright1s();
+            hotBrandList().then(res=>{
+              console.log('热门品牌2',res)
+              if(res.code==200&&res.data!=null){
+                this.hotbrands=res.data
+              }
+            })
           }
           else if(id==3){
               this.toggright1s2();
@@ -622,6 +629,7 @@ export default {
     zhitem(id){
         this.zhtype=id
         this.dataType=id
+        this.commList=[]
         if(id==1){
           this.attentionCount=''
           this.newProduct=''
@@ -674,7 +682,7 @@ export default {
               storeCity[index].list.push({
                   name : item.brandName,
                   key : firstName,
-                  // imgUrl:item.brandLogo
+                  imgUrl:item.brandLogo==null?'':item.brandLogo
               });            
           }
          

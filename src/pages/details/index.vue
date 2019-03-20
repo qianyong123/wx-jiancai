@@ -2,24 +2,24 @@
   <div class="details" >
       <div class="imgBanner">
         <img :src="product.imgUrl" alt="">
-          <div class="spell">
+          <div class="spell" v-if="isgroup==0">
             <div class="spell2">
                 <div class="spellImg">
                   <div>
                     <img src="/static/Icon/spell4.png" alt="">
                   </div>
-                  <div>5人团</div>
+                  <div>{{product.fightGroupCount}}人团</div>
                 </div>             
-                <div style="font-weight: 600;">2/5开团</div>
+                <div style="font-weight: 600;">{{product.existFightGroup==null?0:product.existFightGroup}}/{{product.fightGroupCount}}开团</div>
             </div>
             <div class="spellTime">
               <p>距离拼团结束还剩：</p>
               <p style="margin-top:8px;">
-                  <span style="margin-right:3px">1</span>
+                  <span style="margin-right:3px">{{time1}}</span>
                   天
-                  <span style="margin-left:3px">20</span>：
-                  <span>20</span>：
-                  <span>30</span>
+                  <span style="margin-left:3px">{{time2}}</span>：
+                  <span>{{time3}}</span>：
+                  <span>{{time4}}</span>
               </p>
             </div>
           </div>        
@@ -87,10 +87,12 @@
       </div>
       <div class="oncePsellBox">
           <div class="delivery">
-          <span class="apply" @click="handleClose(1)">申请送样</span>
-          <span class="order" @click="handleClose(2)">免费预约</span>
+            <span class="apply" @click="handleClose(1)">申请送样</span>
+            <span class="order" @click="handleClose(2)">免费预约</span>
           </div>
-          <div class="oncePsell" @click="handleClose(3)">立即拼团</div>
+          <div v-if="product.existFightGroup!=product.fightGroupCount">
+            <div class="oncePsell" v-if="isgroup==0" @click="handleClose(3)">立即拼团</div>
+          </div>
       </div>
       
       <i-modal :title="modalTiele1" :visible=" visible1 " @ok="handleClose1(1)" @cancel="handleClose1(2)">
@@ -106,6 +108,7 @@
 
 <script>
 import {getData,productDetail,productAttention} from '../../utils/api.js'
+import { clearInterval, setInterval } from 'timers';
 
 export default {
   data () {
@@ -122,22 +125,43 @@ export default {
       data:{},
       dealer:{},//经销商信息
       dealerLabel:[],
+      remainingTime:[],
+      isgroup:1,
+      time1:0,
+      time2:0,
+      time3:0,
+      time4:0,
+      time5:30,
+      id:0,
+      time:null,
     }
   },
 
   components: {
     
   },
- onLoad(){
-      let data=this.$root.$mp.query
+ onLoad(){  
+      let data=this.$root.$mp.query  
       this.data=data
       let openId=wx.getStorageSync('openId')
       if(openId){
           this.openId=openId
-      }
-      console.log(data)
+      }   
       if(data.id){
-          getData(`/product/detail`,{id:data.id,openId:this.openId}).then(res=>{
+        this.id=data.id
+         this.getDatas() 
+      }
+  },
+  methods: {
+    
+    //获取详情
+    getDatas(){
+      this.dealer={}
+      this.product={}
+      this.dealerLabel=[]
+      this.remainingTime=[]
+        let times=new Date().getTime()
+        getData(`/product/detail`,{id:this.id,openId:this.openId}).then(res=>{
           console.log('商品详情',res)
           if(res.code==200&&res.data!=null){
                 this.product=res.data.product
@@ -149,11 +173,67 @@ export default {
                        this.dealerLabel=res.data.dealerLabel
                     }
                 }
-          }
+                if(this.product.isFightGroup==0&&this.product.remainingTime!=0){
+                  let remainingTime=this.product.remainingTime.split('-')
+                  this.time1=Number(remainingTime[0])
+                  this.time2=Number(remainingTime[1])
+                  this.time3=Number(remainingTime[2])
+                  this.time4=Number(remainingTime[3])
+                }
+                if(this.product.isFightGroup==0&&this.product.remainingTime!='0'){
+                    console.log(this.product.startTime-times)
+                    if(this.product.startTime>times){
+                        this.isgroup=1
+                      }
+                      else{
+                      this.isgroup=0
+                      let times=setInterval(()=>{
+                          if(this.time4==0){                                                 
+                            if(this.time1==0&&this.time2==0&&this.time3==0){
+                              this.time4==0                         
+                              return
+                            }                           
+                            else if(this.time3==0){
+                              if(this.time2==0){
+                                  if(this.time1==0){
+                                    this.time4==0                                 
+                                    return
+                                  }else{
+                                    this.time1=this.time1-1
+                                    this.time2=23
+                                    this.time3=59
+                                    this.time4=59
+                                  }
+                              }else{
+                                this.time2=this.time2-1
+                                this.time3=59
+                                this.time4=59
+                              }
+                              
+                             
+                            }else{
+                              this.time3=this.time3-1
+                              this.time4=59
+                            }                          
+                          }else {                       
+                        
+                            this.time4--                          
+                          }
+                         
+                        },1000)
+                      } 
+                  }else{
+                      return this.isgroup=1
+                    }
+              }else{
+                 wx.showToast({
+                  title: '获取商品信息失败',
+                  icon: 'none',
+                  duration:2000
+                })
+              }
         })
-      }
-  },
-  methods: {
+    },
     handleClose(id){
       this.visible1=true
       if(id==1){
@@ -207,6 +287,7 @@ export default {
               console.log('登记信息',res)
                 this.visible1=false
               if(res.code==200&&res.msg=='成功'){ 
+                this.getDatas() 
                 wx.showToast({
                     title: this.modalTiele1+'成功',
                     icon: 'success',
@@ -480,7 +561,7 @@ export default {
         // right: 0;
         font-size: 14px;
         color: #fff;
-        
+        margin-bottom: 20px;
         .apply,.order{
           display:inline-block;
           height: 40px;
@@ -505,7 +586,7 @@ export default {
         background: #FF8E34;
         color: #fff;
         border-radius:20px;
-        margin-top:20px;
+        // margin-top:20px;
       }
     }
     

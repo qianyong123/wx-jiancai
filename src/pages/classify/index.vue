@@ -26,13 +26,19 @@
            <div v-if="type==0" class="classiify-item">
               <div 
               class="item-name"
-              v-for="(item,index) in classiifyList" 
-              @click="onComm(item)"
-              :key="index">
-                  <div class="item-img">
-                      <img :src="item.imgUrl" alt="">
+              v-for="(item,index) in classiifyList"              
+              :key="index">             
+                  <div>{{item.assortName}}</div>
+                  <div class="itemBox">
+                       <div  class="itemBox2" v-for="(item2,index2) in item.productList" :key="index2" @click="onComm(item2)">
+                          <div class="item-img">
+                            <img :src="item2.imgUrl" alt="">
+                          </div>
+                          <div class="name2">{{item2.name}}</div>
+                      </div>
                   </div>
-                  <div class="name2">{{item.name}}</div>
+                 
+                                               
               </div>
            </div>  
             <seek-firm v-else :commList='classiifyList' :type='type'></seek-firm>  
@@ -112,7 +118,10 @@ export default {
    onloadPageList(){
       console.log('加载分页')
       let page=Math.ceil(this.total/10)
-      if(this.pageNum<=page){
+      if(this.type==0){
+        return
+      }
+      else if(this.pageNum<=page){
         this.classSorts()
       }else{
         this.noProduct=true
@@ -126,7 +135,12 @@ export default {
         pageSize:this.pageSize
       }).then(res=>{
         console.log('建材馆列表',res)
+        this.noProduct=false
         if(res.code==200&&res.data!=null){
+          if(this.type==0&&res.data!=null){
+            this.classiifyList=res.data
+            return
+          }
           let list=res.data.list
             // if(this.type==1||this.type==2||this.type==3){
             //   list.forEach((data2,index)=>{
@@ -136,7 +150,7 @@ export default {
             this.classiifyList= this.classiifyList.concat(list)
             this.total=res.data.total
             this.pageNum=this.pageNum+1      
-            this.noProduct=false
+            
         }
       })
    }

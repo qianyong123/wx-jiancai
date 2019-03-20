@@ -52,6 +52,7 @@ import {
   } from '../../utils/api.js'
 import item from '@/components/item'
 import card from '@/components/card'
+import { setInterval, clearInterval } from 'timers';
 
 export default {
   data () {
@@ -89,6 +90,7 @@ export default {
       name:'',
       openId:'',
       total:2,
+      time:''
     }
   },
 
@@ -105,6 +107,13 @@ export default {
     // if(userInfo){
     //       this.userInfo=userInfo
     // }
+    // this.time=setInterval(()=>{
+    //   if(this.pageSize==0){
+    //     clearInterval(this.time)
+    //     return
+    //   }
+    //     console.log(this.pageSize--)
+    // },1000)
     //首页banner
     indexBanner().then(res=>{
       console.log('banner',res)   
@@ -173,6 +182,7 @@ export default {
                 this.commList=this.commList.concat(list)  
                  this.total=res.data.total
                  this.pageNum=this.pageNum+1
+                 console.log('commList',this.commList)
               }
         })
     },

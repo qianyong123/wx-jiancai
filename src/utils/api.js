@@ -39,6 +39,10 @@ export const addFindAll=(data)=>{
 export const productDetail=(data)=>{
     return request.request(`/registration/save`, data,{method:'post',})
 }
+//获取热门品牌
+export const hotBrandList=(data)=>{
+    return request.request(`/dealer/hotBrandList`, data,{method:'get',})
+}
 
 
 

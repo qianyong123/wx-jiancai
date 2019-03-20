@@ -11,18 +11,20 @@
                       <img src="/static/Icon/user.jpg" alt="">
                       <span>{{item.dealerName}}</span>
                   </div>
-                  <!-- <div v-if="item.state==1">
+                 <div>
                     <img src="/static/Icon/spell1.png" alt="">
-                      <span class="phone">{{item.amount}}/5开团</span>
+                    <span class="phone">{{item.existFightGroup}}/{{item.fightGroupCount}}开团</span>
                   </div>
-                  <div v-else-if="item.state==2">
-                    <img class="success" src="/static/Icon/spell2.png" alt="">
-                     
-                  </div>
-                  <div v-else-if="item.state==3">
-                    <img class="err" src="/static/Icon/spell3.png" alt="">                    
-                  </div> -->
+                   
+                 
               </div>
+              <div class="success" v-if="(item.existFightGroup)==item.fightGroupCount">
+                    <img  src="/static/Icon/spell2.png" alt="">
+                     
+                </div>
+                <div class="err" v-else-if="(item.remainingTime)<=0&&(item.existFightGroup)!=item.fightGroupCount">
+                    <img  src="/static/Icon/spell3.png" alt="">                    
+                </div>  
           </div>
       </div>
       <div v-if="myList.length<1" class="nodata">你还没有拼团的商品</div>
@@ -36,6 +38,7 @@ export default {
     return {
       motto: 'Hello World',
       userInfo: {},
+      time:0,
        myList:[
         // {id:1,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'1'},
         // {id:2,name:'宜兴马克瓷砖',text:'天然纯白贝壳马赛克墙 无缝背景墙 密拼 2018欧式瓷是东莞市房染色法谁认识',amount:'2',state:'2'},
@@ -74,15 +77,7 @@ export default {
          myFight({openId}).then(res=>{
           console.log('我的拼团',res)
           if(res.code==200&&res.data!=null){
-            let list=res.data
-            list.forEach((data,index)=>{
-              if(data==null){
-                  list.splice(index,1)
-              }
-              else if(data.description.length>30){
-                list[index].description=data.description.slice(0,30)+'...'
-              }
-            })
+            let list=res.data          
             this.myList=list
             }
         })
@@ -121,11 +116,13 @@ export default {
         justify-content: space-between;
         align-items: center;
         font-size: 14px;
+        position: relative;
       }
       .imgs{
         position: relative;
         width: 70px;
         height: 70px;
+        background: #ccc;
         img{
           position: absolute;
           top: 0;
@@ -141,6 +138,28 @@ export default {
         flex-direction: column;
         justify-content: space-between;
         position: relative;
+        .success{
+              width: 68px;
+              height: 68px;
+              position: absolute;
+              top: 4px;
+              right:0px;
+              img{
+                width: 68px;
+              height: 68px;
+              }
+            }
+             .err{
+              width: 68px;
+              height: 68px;
+              position: absolute;
+              top: 4px;
+              right:0px;
+               img{
+                width: 68px;
+              height: 68px;
+              }
+            }
         .item-text{
           width: 100%;
           height: 40px;
@@ -163,20 +182,8 @@ export default {
             .phone{
                 color: #FFB039;
             }
-            .success{
-              width: 68px;
-              height: 68px;
-              position: absolute;
-              top: 4px;
-              right:0px;
-            }
-            .err{
-              width: 68px;
-              height: 68px;
-              position: absolute;
-              top: 4px;
-              right:0px;
-            }
+            
+           
           }
           
         }

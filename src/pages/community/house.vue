@@ -9,7 +9,7 @@
                 <!-- <span v-if="houseList.status==0" class="states"></span> -->
                 <span  class="states">{{houseList.status}}</span>
             </div>
-            <div class="xiaoqu-site">{{houseList.address}}</div>
+            <div class="xiaoqu-site" >{{houseList.address}}</div>
             <div>
                 <span v-for="(item2,index2) in houseList.label" 
                 :key="index2" 
@@ -88,8 +88,8 @@ props: ['houseList'],
         }
     }
     .site{
-        width: 100px;
-        min-height: 75px;
+        width: 110px;
+        height: 75px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -106,6 +106,9 @@ props: ['houseList'],
             color: #118EE9;
             border-radius: 2px;
         }
+        // .xiaoqu-site{
+        //     margin:15px 0;
+        // }
         .type{
             padding:1px 5px;
             font-size: 12px;
